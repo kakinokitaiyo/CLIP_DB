@@ -1,0 +1,392 @@
+[
+  {
+    "sketch_file": "writing_1.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "peach_edge.png",
+        "score": 0.6248989701271057
+      },
+      {
+        "rank": 2,
+        "gallery_file": "syamozi_edge.png",
+        "score": 0.568534791469574
+      },
+      {
+        "rank": 3,
+        "gallery_file": "tonng_edge.png",
+        "score": 0.5513041019439697
+      },
+      {
+        "rank": 4,
+        "gallery_file": "apple_edge.png",
+        "score": 0.5441128611564636
+      },
+      {
+        "rank": 5,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.5352690815925598
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_10.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "syamozi_edge.png",
+        "score": 0.5043075680732727
+      },
+      {
+        "rank": 2,
+        "gallery_file": "suraisu_edge.png",
+        "score": 0.4471912980079651
+      },
+      {
+        "rank": 3,
+        "gallery_file": "banana_edge.png",
+        "score": 0.4420030415058136
+      },
+      {
+        "rank": 4,
+        "gallery_file": "can01_edge.png",
+        "score": 0.4395246207714081
+      },
+      {
+        "rank": 5,
+        "gallery_file": "tonng02_edge.png",
+        "score": 0.43911755084991455
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_11.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "banana_edge.png",
+        "score": 0.5657132267951965
+      },
+      {
+        "rank": 2,
+        "gallery_file": "tonng_edge.png",
+        "score": 0.5492956042289734
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.5158323049545288
+      },
+      {
+        "rank": 4,
+        "gallery_file": "suraisu_edge.png",
+        "score": 0.5139442086219788
+      },
+      {
+        "rank": 5,
+        "gallery_file": "syamozi_edge.png",
+        "score": 0.4988049864768982
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_12.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "suraisu_edge.png",
+        "score": 0.5454412698745728
+      },
+      {
+        "rank": 2,
+        "gallery_file": "syamozi_edge.png",
+        "score": 0.5331624746322632
+      },
+      {
+        "rank": 3,
+        "gallery_file": "tonng02_edge.png",
+        "score": 0.5262836813926697
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.5234160423278809
+      },
+      {
+        "rank": 5,
+        "gallery_file": "banana_edge.png",
+        "score": 0.5188137888908386
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_13.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "pet02_edge.png",
+        "score": 0.5753430724143982
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup04_edge.png",
+        "score": 0.5596493482589722
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup03_edge.png",
+        "score": 0.549747884273529
+      },
+      {
+        "rank": 4,
+        "gallery_file": "suraisu_edge.png",
+        "score": 0.5484838485717773
+      },
+      {
+        "rank": 5,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.5374937653541565
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_2.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "banana_edge.png",
+        "score": 0.6147236824035645
+      },
+      {
+        "rank": 2,
+        "gallery_file": "syamozi_edge.png",
+        "score": 0.5726247429847717
+      },
+      {
+        "rank": 3,
+        "gallery_file": "suraisu_edge.png",
+        "score": 0.560193657875061
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.5287248492240906
+      },
+      {
+        "rank": 5,
+        "gallery_file": "peach_edge.png",
+        "score": 0.5129457712173462
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_3.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup03_edge.png",
+        "score": 0.6283396482467651
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup04_edge.png",
+        "score": 0.6136886477470398
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.5989357233047485
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup02_edge.png",
+        "score": 0.5778698921203613
+      },
+      {
+        "rank": 5,
+        "gallery_file": "peach_edge.png",
+        "score": 0.5596280694007874
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_4.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup03_edge.png",
+        "score": 0.5430784821510315
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.5366208553314209
+      },
+      {
+        "rank": 3,
+        "gallery_file": "can01_edge.png",
+        "score": 0.5211494565010071
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup04_edge.png",
+        "score": 0.5167749524116516
+      },
+      {
+        "rank": 5,
+        "gallery_file": "peach_edge.png",
+        "score": 0.515880823135376
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_5.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.6254327297210693
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup02_edge.png",
+        "score": 0.5758000016212463
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup03_edge.png",
+        "score": 0.5544165372848511
+      },
+      {
+        "rank": 4,
+        "gallery_file": "peach_edge.png",
+        "score": 0.5333817601203918
+      },
+      {
+        "rank": 5,
+        "gallery_file": "cup04_edge.png",
+        "score": 0.5240496397018433
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_6.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.6448296308517456
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup03_edge.png",
+        "score": 0.613186776638031
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup02_edge.png",
+        "score": 0.604620099067688
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup04_edge.png",
+        "score": 0.5985475778579712
+      },
+      {
+        "rank": 5,
+        "gallery_file": "peach_edge.png",
+        "score": 0.5194570422172546
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_7.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup03_edge.png",
+        "score": 0.6235238909721375
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup04_edge.png",
+        "score": 0.6042736768722534
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.5816672444343567
+      },
+      {
+        "rank": 4,
+        "gallery_file": "peach_edge.png",
+        "score": 0.5574316382408142
+      },
+      {
+        "rank": 5,
+        "gallery_file": "cup02_edge.png",
+        "score": 0.5224214196205139
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_8.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "peach_edge.png",
+        "score": 0.6052457094192505
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.561366081237793
+      },
+      {
+        "rank": 3,
+        "gallery_file": "syamozi_edge.png",
+        "score": 0.5523728132247925
+      },
+      {
+        "rank": 4,
+        "gallery_file": "tonng_edge.png",
+        "score": 0.5396263003349304
+      },
+      {
+        "rank": 5,
+        "gallery_file": "cup03_edge.png",
+        "score": 0.5250352621078491
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_9.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "suraisu_edge.png",
+        "score": 0.5884705781936646
+      },
+      {
+        "rank": 2,
+        "gallery_file": "peach_edge.png",
+        "score": 0.5386128425598145
+      },
+      {
+        "rank": 3,
+        "gallery_file": "syamozi_edge.png",
+        "score": 0.5028168559074402
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup01_edge.png",
+        "score": 0.5024925470352173
+      },
+      {
+        "rank": 5,
+        "gallery_file": "apple_edge.png",
+        "score": 0.48013803362846375
+      }
+    ]
+  }
+]

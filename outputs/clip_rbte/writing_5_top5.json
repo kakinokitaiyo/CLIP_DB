@@ -1,0 +1,30 @@
+{
+  "sketch_file": "writing_5.png",
+  "top5": [
+    {
+      "rank": 1,
+      "gallery_file": "cup01_edge.png",
+      "score": 0.6254327297210693
+    },
+    {
+      "rank": 2,
+      "gallery_file": "cup02_edge.png",
+      "score": 0.5758000016212463
+    },
+    {
+      "rank": 3,
+      "gallery_file": "cup03_edge.png",
+      "score": 0.5544165372848511
+    },
+    {
+      "rank": 4,
+      "gallery_file": "peach_edge.png",
+      "score": 0.5333817601203918
+    },
+    {
+      "rank": 5,
+      "gallery_file": "cup04_edge.png",
+      "score": 0.5240496397018433
+    }
+  ]
+}

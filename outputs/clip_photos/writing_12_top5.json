@@ -1,0 +1,30 @@
+{
+  "sketch_file": "writing_12.png",
+  "top5": [
+    {
+      "rank": 1,
+      "photo_file": "banana.jpeg",
+      "score": 0.43903830647468567
+    },
+    {
+      "rank": 2,
+      "photo_file": "suraisu.jpeg",
+      "score": 0.4193340539932251
+    },
+    {
+      "rank": 3,
+      "photo_file": "syamozi.jpeg",
+      "score": 0.40424007177352905
+    },
+    {
+      "rank": 4,
+      "photo_file": "tonng.jpeg",
+      "score": 0.39901745319366455
+    },
+    {
+      "rank": 5,
+      "photo_file": "tonng02.jpeg",
+      "score": 0.39100751280784607
+    }
+  ]
+}

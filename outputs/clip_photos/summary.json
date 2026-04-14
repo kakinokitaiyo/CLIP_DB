@@ -1,0 +1,392 @@
+[
+  {
+    "sketch_file": "writing_1.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "apple.jpeg",
+        "score": 0.48977339267730713
+      },
+      {
+        "rank": 2,
+        "photo_file": "banana.jpeg",
+        "score": 0.4696115553379059
+      },
+      {
+        "rank": 3,
+        "photo_file": "peach.jpeg",
+        "score": 0.4654693603515625
+      },
+      {
+        "rank": 4,
+        "photo_file": "tonng.jpeg",
+        "score": 0.432451069355011
+      },
+      {
+        "rank": 5,
+        "photo_file": "cup01.jpeg",
+        "score": 0.4184734523296356
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_10.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "syamozi.jpeg",
+        "score": 0.5205598473548889
+      },
+      {
+        "rank": 2,
+        "photo_file": "peach.jpeg",
+        "score": 0.4190745949745178
+      },
+      {
+        "rank": 3,
+        "photo_file": "banana.jpeg",
+        "score": 0.4102593660354614
+      },
+      {
+        "rank": 4,
+        "photo_file": "apple.jpeg",
+        "score": 0.39253363013267517
+      },
+      {
+        "rank": 5,
+        "photo_file": "cup02.jpeg",
+        "score": 0.39091014862060547
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_11.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "banana.jpeg",
+        "score": 0.4951782822608948
+      },
+      {
+        "rank": 2,
+        "photo_file": "tonng.jpeg",
+        "score": 0.4537607729434967
+      },
+      {
+        "rank": 3,
+        "photo_file": "suraisu.jpeg",
+        "score": 0.42349326610565186
+      },
+      {
+        "rank": 4,
+        "photo_file": "cup01.jpeg",
+        "score": 0.4185121953487396
+      },
+      {
+        "rank": 5,
+        "photo_file": "syamozi.jpeg",
+        "score": 0.41259220242500305
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_12.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "banana.jpeg",
+        "score": 0.43903830647468567
+      },
+      {
+        "rank": 2,
+        "photo_file": "suraisu.jpeg",
+        "score": 0.4193340539932251
+      },
+      {
+        "rank": 3,
+        "photo_file": "syamozi.jpeg",
+        "score": 0.40424007177352905
+      },
+      {
+        "rank": 4,
+        "photo_file": "tonng.jpeg",
+        "score": 0.39901745319366455
+      },
+      {
+        "rank": 5,
+        "photo_file": "tonng02.jpeg",
+        "score": 0.39100751280784607
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_13.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "cup04.jpeg",
+        "score": 0.48373547196388245
+      },
+      {
+        "rank": 2,
+        "photo_file": "cup02.jpeg",
+        "score": 0.47488993406295776
+      },
+      {
+        "rank": 3,
+        "photo_file": "cup03.jpeg",
+        "score": 0.4689241647720337
+      },
+      {
+        "rank": 4,
+        "photo_file": "apple.jpeg",
+        "score": 0.4679049849510193
+      },
+      {
+        "rank": 5,
+        "photo_file": "syamozi.jpeg",
+        "score": 0.45661431550979614
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_2.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "banana.jpeg",
+        "score": 0.5662524700164795
+      },
+      {
+        "rank": 2,
+        "photo_file": "apple.jpeg",
+        "score": 0.45149338245391846
+      },
+      {
+        "rank": 3,
+        "photo_file": "syamozi.jpeg",
+        "score": 0.4375835657119751
+      },
+      {
+        "rank": 4,
+        "photo_file": "peach.jpeg",
+        "score": 0.437269002199173
+      },
+      {
+        "rank": 5,
+        "photo_file": "suraisu.jpeg",
+        "score": 0.4030231833457947
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_3.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "cup03.jpeg",
+        "score": 0.49228084087371826
+      },
+      {
+        "rank": 2,
+        "photo_file": "cup01.jpeg",
+        "score": 0.4906246066093445
+      },
+      {
+        "rank": 3,
+        "photo_file": "cup04.jpeg",
+        "score": 0.48370975255966187
+      },
+      {
+        "rank": 4,
+        "photo_file": "cup02.jpeg",
+        "score": 0.48117461800575256
+      },
+      {
+        "rank": 5,
+        "photo_file": "apple.jpeg",
+        "score": 0.4620959162712097
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_4.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "cup04.jpeg",
+        "score": 0.43569815158843994
+      },
+      {
+        "rank": 2,
+        "photo_file": "cup01.jpeg",
+        "score": 0.42140960693359375
+      },
+      {
+        "rank": 3,
+        "photo_file": "cup03.jpeg",
+        "score": 0.42091095447540283
+      },
+      {
+        "rank": 4,
+        "photo_file": "cup02.jpeg",
+        "score": 0.41532447934150696
+      },
+      {
+        "rank": 5,
+        "photo_file": "pet02.jpeg",
+        "score": 0.4024536609649658
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_5.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "cup02.jpeg",
+        "score": 0.4783116281032562
+      },
+      {
+        "rank": 2,
+        "photo_file": "cup01.jpeg",
+        "score": 0.4477378726005554
+      },
+      {
+        "rank": 3,
+        "photo_file": "cup04.jpeg",
+        "score": 0.4363820552825928
+      },
+      {
+        "rank": 4,
+        "photo_file": "banana.jpeg",
+        "score": 0.41975289583206177
+      },
+      {
+        "rank": 5,
+        "photo_file": "cup03.jpeg",
+        "score": 0.41914552450180054
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_6.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "cup02.jpeg",
+        "score": 0.49769362807273865
+      },
+      {
+        "rank": 2,
+        "photo_file": "cup01.jpeg",
+        "score": 0.4903457760810852
+      },
+      {
+        "rank": 3,
+        "photo_file": "cup04.jpeg",
+        "score": 0.45763322710990906
+      },
+      {
+        "rank": 4,
+        "photo_file": "cup03.jpeg",
+        "score": 0.45294618606567383
+      },
+      {
+        "rank": 5,
+        "photo_file": "banana.jpeg",
+        "score": 0.39741915464401245
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_7.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "cup03.jpeg",
+        "score": 0.4856065809726715
+      },
+      {
+        "rank": 2,
+        "photo_file": "cup01.jpeg",
+        "score": 0.47212791442871094
+      },
+      {
+        "rank": 3,
+        "photo_file": "cup04.jpeg",
+        "score": 0.46178531646728516
+      },
+      {
+        "rank": 4,
+        "photo_file": "cup02.jpeg",
+        "score": 0.4566985070705414
+      },
+      {
+        "rank": 5,
+        "photo_file": "syamozi.jpeg",
+        "score": 0.4436221122741699
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_8.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "banana.jpeg",
+        "score": 0.49223461747169495
+      },
+      {
+        "rank": 2,
+        "photo_file": "peach.jpeg",
+        "score": 0.4777359068393707
+      },
+      {
+        "rank": 3,
+        "photo_file": "tonng.jpeg",
+        "score": 0.4647097885608673
+      },
+      {
+        "rank": 4,
+        "photo_file": "apple.jpeg",
+        "score": 0.4626910090446472
+      },
+      {
+        "rank": 5,
+        "photo_file": "cup01.jpeg",
+        "score": 0.4384338855743408
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_9.png",
+    "top5": [
+      {
+        "rank": 1,
+        "photo_file": "apple.jpeg",
+        "score": 0.4028884172439575
+      },
+      {
+        "rank": 2,
+        "photo_file": "tonng.jpeg",
+        "score": 0.39091625809669495
+      },
+      {
+        "rank": 3,
+        "photo_file": "banana.jpeg",
+        "score": 0.3903784453868866
+      },
+      {
+        "rank": 4,
+        "photo_file": "peach.jpeg",
+        "score": 0.38954806327819824
+      },
+      {
+        "rank": 5,
+        "photo_file": "syamozi.jpeg",
+        "score": 0.38240954279899597
+      }
+    ]
+  }
+]

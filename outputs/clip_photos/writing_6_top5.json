@@ -1,0 +1,30 @@
+{
+  "sketch_file": "writing_6.png",
+  "top5": [
+    {
+      "rank": 1,
+      "photo_file": "cup02.jpeg",
+      "score": 0.49769362807273865
+    },
+    {
+      "rank": 2,
+      "photo_file": "cup01.jpeg",
+      "score": 0.4903457760810852
+    },
+    {
+      "rank": 3,
+      "photo_file": "cup04.jpeg",
+      "score": 0.45763322710990906
+    },
+    {
+      "rank": 4,
+      "photo_file": "cup03.jpeg",
+      "score": 0.45294618606567383
+    },
+    {
+      "rank": 5,
+      "photo_file": "banana.jpeg",
+      "score": 0.39741915464401245
+    }
+  ]
+}
