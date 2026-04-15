@@ -1,0 +1,30 @@
+{
+  "sketch_file": "writing_8.png",
+  "top5": [
+    {
+      "rank": 1,
+      "gallery_file": "apple.jpeg",
+      "score": 0.6809593439102173
+    },
+    {
+      "rank": 2,
+      "gallery_file": "peach.jpeg",
+      "score": 0.645092785358429
+    },
+    {
+      "rank": 3,
+      "gallery_file": "syamozi.jpeg",
+      "score": 0.5898939371109009
+    },
+    {
+      "rank": 4,
+      "gallery_file": "cup03.jpeg",
+      "score": 0.5788604021072388
+    },
+    {
+      "rank": 5,
+      "gallery_file": "cup04.jpeg",
+      "score": 0.5630469918251038
+    }
+  ]
+}

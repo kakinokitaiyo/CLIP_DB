@@ -1,0 +1,30 @@
+{
+  "sketch_file": "writing_7.png",
+  "top5": [
+    {
+      "rank": 1,
+      "gallery_file": "syamozi.jpeg",
+      "score": 0.600335419178009
+    },
+    {
+      "rank": 2,
+      "gallery_file": "cup03.jpeg",
+      "score": 0.5910040736198425
+    },
+    {
+      "rank": 3,
+      "gallery_file": "cup02.jpeg",
+      "score": 0.5907070636749268
+    },
+    {
+      "rank": 4,
+      "gallery_file": "cup04.jpeg",
+      "score": 0.568061888217926
+    },
+    {
+      "rank": 5,
+      "gallery_file": "cup01.jpeg",
+      "score": 0.5600401759147644
+    }
+  ]
+}

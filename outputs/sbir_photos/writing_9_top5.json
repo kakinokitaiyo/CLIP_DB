@@ -1,0 +1,30 @@
+{
+  "sketch_file": "writing_9.png",
+  "top5": [
+    {
+      "rank": 1,
+      "gallery_file": "cup03.jpeg",
+      "score": 0.5243892073631287
+    },
+    {
+      "rank": 2,
+      "gallery_file": "can01.jpeg",
+      "score": 0.5154989361763
+    },
+    {
+      "rank": 3,
+      "gallery_file": "pet02.jpeg",
+      "score": 0.5150691866874695
+    },
+    {
+      "rank": 4,
+      "gallery_file": "cup04.jpeg",
+      "score": 0.505547821521759
+    },
+    {
+      "rank": 5,
+      "gallery_file": "tonng02.jpeg",
+      "score": 0.500752329826355
+    }
+  ]
+}

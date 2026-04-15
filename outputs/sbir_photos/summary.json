@@ -1,0 +1,392 @@
+[
+  {
+    "sketch_file": "writing_1.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "apple.jpeg",
+        "score": 0.7035083770751953
+      },
+      {
+        "rank": 2,
+        "gallery_file": "peach.jpeg",
+        "score": 0.6499332189559937
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup02.jpeg",
+        "score": 0.5708339810371399
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup01.jpeg",
+        "score": 0.5430697798728943
+      },
+      {
+        "rank": 5,
+        "gallery_file": "banana.jpeg",
+        "score": 0.5292937159538269
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_10.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.7619783282279968
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.6024814248085022
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.5952959656715393
+      },
+      {
+        "rank": 4,
+        "gallery_file": "can01.jpeg",
+        "score": 0.5627195835113525
+      },
+      {
+        "rank": 5,
+        "gallery_file": "tonng02.jpeg",
+        "score": 0.5546549558639526
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_11.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.5747168064117432
+      },
+      {
+        "rank": 2,
+        "gallery_file": "banana.jpeg",
+        "score": 0.5670397281646729
+      },
+      {
+        "rank": 3,
+        "gallery_file": "tonng02.jpeg",
+        "score": 0.5546330809593201
+      },
+      {
+        "rank": 4,
+        "gallery_file": "can01.jpeg",
+        "score": 0.5449177026748657
+      },
+      {
+        "rank": 5,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.5366560816764832
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_12.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "tonng02.jpeg",
+        "score": 0.6919562220573425
+      },
+      {
+        "rank": 2,
+        "gallery_file": "banana.jpeg",
+        "score": 0.6193597316741943
+      },
+      {
+        "rank": 3,
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.585407018661499
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup01.jpeg",
+        "score": 0.5552066564559937
+      },
+      {
+        "rank": 5,
+        "gallery_file": "can01.jpeg",
+        "score": 0.5490356087684631
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_13.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup02.jpeg",
+        "score": 0.6589714884757996
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup01.jpeg",
+        "score": 0.5816084146499634
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.5595278739929199
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.5495120882987976
+      },
+      {
+        "rank": 5,
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.48894718289375305
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_2.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.5990331172943115
+      },
+      {
+        "rank": 2,
+        "gallery_file": "banana.jpeg",
+        "score": 0.5395175218582153
+      },
+      {
+        "rank": 3,
+        "gallery_file": "tonng02.jpeg",
+        "score": 0.5393142104148865
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup01.jpeg",
+        "score": 0.5254062414169312
+      },
+      {
+        "rank": 5,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.5229074358940125
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_3.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup02.jpeg",
+        "score": 0.6211541891098022
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.5767473578453064
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup01.jpeg",
+        "score": 0.5736801624298096
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.5626014471054077
+      },
+      {
+        "rank": 5,
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.5435721278190613
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_4.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup02.jpeg",
+        "score": 0.5712044835090637
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.5371443629264832
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.5354297757148743
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup01.jpeg",
+        "score": 0.5200233459472656
+      },
+      {
+        "rank": 5,
+        "gallery_file": "pet01.jpeg",
+        "score": 0.49844810366630554
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_5.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup01.jpeg",
+        "score": 0.6449393033981323
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup02.jpeg",
+        "score": 0.6174774765968323
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.59085613489151
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.5794577598571777
+      },
+      {
+        "rank": 5,
+        "gallery_file": "pet01.jpeg",
+        "score": 0.5271421074867249
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_6.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.6286177039146423
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.6269845366477966
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup01.jpeg",
+        "score": 0.6226890683174133
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup02.jpeg",
+        "score": 0.5939393639564514
+      },
+      {
+        "rank": 5,
+        "gallery_file": "can01.jpeg",
+        "score": 0.5002930164337158
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_7.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.600335419178009
+      },
+      {
+        "rank": 2,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.5910040736198425
+      },
+      {
+        "rank": 3,
+        "gallery_file": "cup02.jpeg",
+        "score": 0.5907070636749268
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.568061888217926
+      },
+      {
+        "rank": 5,
+        "gallery_file": "cup01.jpeg",
+        "score": 0.5600401759147644
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_8.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "apple.jpeg",
+        "score": 0.6809593439102173
+      },
+      {
+        "rank": 2,
+        "gallery_file": "peach.jpeg",
+        "score": 0.645092785358429
+      },
+      {
+        "rank": 3,
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.5898939371109009
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.5788604021072388
+      },
+      {
+        "rank": 5,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.5630469918251038
+      }
+    ]
+  },
+  {
+    "sketch_file": "writing_9.png",
+    "top5": [
+      {
+        "rank": 1,
+        "gallery_file": "cup03.jpeg",
+        "score": 0.5243892073631287
+      },
+      {
+        "rank": 2,
+        "gallery_file": "can01.jpeg",
+        "score": 0.5154989361763
+      },
+      {
+        "rank": 3,
+        "gallery_file": "pet02.jpeg",
+        "score": 0.5150691866874695
+      },
+      {
+        "rank": 4,
+        "gallery_file": "cup04.jpeg",
+        "score": 0.505547821521759
+      },
+      {
+        "rank": 5,
+        "gallery_file": "tonng02.jpeg",
+        "score": 0.500752329826355
+      }
+    ]
+  }
+]
