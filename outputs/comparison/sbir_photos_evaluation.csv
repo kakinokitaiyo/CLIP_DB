@@ -1,0 +1,14 @@
+sketch_file,ground_truth,pred_1,pred_2,pred_3,pred_4,pred_5,best_rank,top1_correct,top5_correct
+writing_1.png,"apple.jpeg, apple_edge.png",apple.jpeg,peach.jpeg,cup02.jpeg,cup01.jpeg,banana.jpeg,1,True,True
+writing_2.png,"banana.jpeg, banana_edge.png",syamozi.jpeg,banana.jpeg,tonng02.jpeg,cup01.jpeg,cup03.jpeg,2,False,True
+writing_3.png,"can01.jpeg, can01_edge.png",cup02.jpeg,cup03.jpeg,cup01.jpeg,cup04.jpeg,syamozi.jpeg,,False,False
+writing_4.png,"pet01.jpeg, pet02.jpeg, pet01_edge.png, pet02_edge.png",cup02.jpeg,cup03.jpeg,cup04.jpeg,cup01.jpeg,pet01.jpeg,5,False,True
+writing_5.png,"cup01.jpeg, cup01_edge.png",cup01.jpeg,cup02.jpeg,cup03.jpeg,cup04.jpeg,pet01.jpeg,1,True,True
+writing_6.png,"cup02.jpeg, cup02_edge.png",cup03.jpeg,cup04.jpeg,cup01.jpeg,cup02.jpeg,can01.jpeg,4,False,True
+writing_7.png,"cup04.jpeg, cup03.jpeg, cup04_edge.png, cup03_edge.png",syamozi.jpeg,cup03.jpeg,cup02.jpeg,cup04.jpeg,cup01.jpeg,2,False,True
+writing_8.png,"peach.jpeg, peach_edge.png",apple.jpeg,peach.jpeg,syamozi.jpeg,cup03.jpeg,cup04.jpeg,2,False,True
+writing_9.png,"suraisu.jpeg, suraisu_edge.png",cup03.jpeg,can01.jpeg,pet02.jpeg,cup04.jpeg,tonng02.jpeg,,False,False
+writing_10.png,"syamozi.jpeg, syamozi_edge.png",syamozi.jpeg,cup04.jpeg,cup03.jpeg,can01.jpeg,tonng02.jpeg,1,True,True
+writing_11.png,"tonng.jpeg, tonng_edge.png",syamozi.jpeg,banana.jpeg,tonng02.jpeg,can01.jpeg,cup04.jpeg,,False,False
+writing_12.png,"tonng02.jpeg, tonng02_edge.png",tonng02.jpeg,banana.jpeg,syamozi.jpeg,cup01.jpeg,can01.jpeg,1,True,True
+writing_13.png,"pet01.jpeg, pet02.jpeg, pet01_edge.png, pet02_edge.png",cup02.jpeg,cup01.jpeg,cup04.jpeg,cup03.jpeg,syamozi.jpeg,,False,False

@@ -1,0 +1,14 @@
+sketch_file,ground_truth,clip_photos_pred1,clip_photos_best_rank,clip_photos_top1,clip_photos_top5,clip_rbte_pred1,clip_rbte_best_rank,clip_rbte_top1,clip_rbte_top5,sbir_photos_pred1,sbir_photos_best_rank,sbir_photos_top1,sbir_photos_top5,sbir_rbte_pred1,sbir_rbte_best_rank,sbir_rbte_top1,sbir_rbte_top5
+writing_1.png,"apple.jpeg, apple_edge.png",apple.jpeg,1,True,True,peach_edge.png,4,False,True,apple.jpeg,1,True,True,apple_edge.png,1,True,True
+writing_2.png,"banana.jpeg, banana_edge.png",banana.jpeg,1,True,True,banana_edge.png,1,True,True,syamozi.jpeg,2,False,True,banana_edge.png,1,True,True
+writing_3.png,"can01.jpeg, can01_edge.png",cup03.jpeg,,False,False,cup03_edge.png,,False,False,cup02.jpeg,,False,False,cup04_edge.png,,False,False
+writing_4.png,"pet01.jpeg, pet02.jpeg, pet01_edge.png, pet02_edge.png",cup04.jpeg,5,False,True,cup03_edge.png,,False,False,cup02.jpeg,5,False,True,pet01_edge.png,1,True,True
+writing_5.png,"cup01.jpeg, cup01_edge.png",cup02.jpeg,2,False,True,cup01_edge.png,1,True,True,cup01.jpeg,1,True,True,cup02_edge.png,4,False,True
+writing_6.png,"cup02.jpeg, cup02_edge.png",cup02.jpeg,1,True,True,cup01_edge.png,3,False,True,cup03.jpeg,4,False,True,cup02_edge.png,1,True,True
+writing_7.png,"cup04.jpeg, cup03.jpeg, cup04_edge.png, cup03_edge.png",cup03.jpeg,1,True,True,cup03_edge.png,1,True,True,syamozi.jpeg,2,False,True,cup04_edge.png,1,True,True
+writing_8.png,"peach.jpeg, peach_edge.png",banana.jpeg,2,False,True,peach_edge.png,1,True,True,apple.jpeg,2,False,True,peach_edge.png,1,True,True
+writing_9.png,"suraisu.jpeg, suraisu_edge.png",apple.jpeg,,False,False,suraisu_edge.png,1,True,True,cup03.jpeg,,False,False,tonng02_edge.png,2,False,True
+writing_10.png,"syamozi.jpeg, syamozi_edge.png",syamozi.jpeg,1,True,True,syamozi_edge.png,1,True,True,syamozi.jpeg,1,True,True,syamozi_edge.png,1,True,True
+writing_11.png,"tonng.jpeg, tonng_edge.png",banana.jpeg,2,False,True,banana_edge.png,2,False,True,syamozi.jpeg,,False,False,tonng_edge.png,1,True,True
+writing_12.png,"tonng02.jpeg, tonng02_edge.png",banana.jpeg,5,False,True,suraisu_edge.png,3,False,True,tonng02.jpeg,1,True,True,peach_edge.png,2,False,True
+writing_13.png,"pet01.jpeg, pet02.jpeg, pet01_edge.png, pet02_edge.png",cup04.jpeg,,False,False,pet02_edge.png,1,True,True,cup02.jpeg,,False,False,cup04_edge.png,5,False,True

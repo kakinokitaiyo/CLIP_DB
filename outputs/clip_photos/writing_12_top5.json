@@ -3,28 +3,28 @@
   "top5": [
     {
       "rank": 1,
-      "photo_file": "banana.jpeg",
-      "score": 0.43903830647468567
+      "gallery_file": "banana.jpeg",
+      "score": 0.4393921494483948
     },
     {
       "rank": 2,
-      "photo_file": "suraisu.jpeg",
-      "score": 0.4193340539932251
+      "gallery_file": "suraisu.jpeg",
+      "score": 0.41915374994277954
     },
     {
       "rank": 3,
-      "photo_file": "syamozi.jpeg",
-      "score": 0.40424007177352905
+      "gallery_file": "syamozi.jpeg",
+      "score": 0.4043213725090027
     },
     {
       "rank": 4,
-      "photo_file": "tonng.jpeg",
-      "score": 0.39901745319366455
+      "gallery_file": "tonng.jpeg",
+      "score": 0.399290531873703
     },
     {
       "rank": 5,
-      "photo_file": "tonng02.jpeg",
-      "score": 0.39100751280784607
+      "gallery_file": "tonng02.jpeg",
+      "score": 0.3910045623779297
     }
   ]
 }

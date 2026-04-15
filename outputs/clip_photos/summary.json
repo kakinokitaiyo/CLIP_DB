@@ -4,28 +4,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "apple.jpeg",
-        "score": 0.48977339267730713
+        "gallery_file": "apple.jpeg",
+        "score": 0.48983120918273926
       },
       {
         "rank": 2,
-        "photo_file": "banana.jpeg",
-        "score": 0.4696115553379059
+        "gallery_file": "banana.jpeg",
+        "score": 0.46973228454589844
       },
       {
         "rank": 3,
-        "photo_file": "peach.jpeg",
-        "score": 0.4654693603515625
+        "gallery_file": "peach.jpeg",
+        "score": 0.46557411551475525
       },
       {
         "rank": 4,
-        "photo_file": "tonng.jpeg",
-        "score": 0.432451069355011
+        "gallery_file": "tonng.jpeg",
+        "score": 0.43264272809028625
       },
       {
         "rank": 5,
-        "photo_file": "cup01.jpeg",
-        "score": 0.4184734523296356
+        "gallery_file": "cup01.jpeg",
+        "score": 0.41854003071784973
       }
     ]
   },
@@ -34,28 +34,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "syamozi.jpeg",
-        "score": 0.5205598473548889
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.5203949213027954
       },
       {
         "rank": 2,
-        "photo_file": "peach.jpeg",
-        "score": 0.4190745949745178
+        "gallery_file": "peach.jpeg",
+        "score": 0.4193587005138397
       },
       {
         "rank": 3,
-        "photo_file": "banana.jpeg",
-        "score": 0.4102593660354614
+        "gallery_file": "banana.jpeg",
+        "score": 0.4105278253555298
       },
       {
         "rank": 4,
-        "photo_file": "apple.jpeg",
-        "score": 0.39253363013267517
+        "gallery_file": "apple.jpeg",
+        "score": 0.39286115765571594
       },
       {
         "rank": 5,
-        "photo_file": "cup02.jpeg",
-        "score": 0.39091014862060547
+        "gallery_file": "cup02.jpeg",
+        "score": 0.39093273878097534
       }
     ]
   },
@@ -64,28 +64,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "banana.jpeg",
-        "score": 0.4951782822608948
+        "gallery_file": "banana.jpeg",
+        "score": 0.495496928691864
       },
       {
         "rank": 2,
-        "photo_file": "tonng.jpeg",
-        "score": 0.4537607729434967
+        "gallery_file": "tonng.jpeg",
+        "score": 0.45381271839141846
       },
       {
         "rank": 3,
-        "photo_file": "suraisu.jpeg",
-        "score": 0.42349326610565186
+        "gallery_file": "suraisu.jpeg",
+        "score": 0.4233827590942383
       },
       {
         "rank": 4,
-        "photo_file": "cup01.jpeg",
-        "score": 0.4185121953487396
+        "gallery_file": "cup01.jpeg",
+        "score": 0.4183361232280731
       },
       {
         "rank": 5,
-        "photo_file": "syamozi.jpeg",
-        "score": 0.41259220242500305
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.4125846028327942
       }
     ]
   },
@@ -94,28 +94,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "banana.jpeg",
-        "score": 0.43903830647468567
+        "gallery_file": "banana.jpeg",
+        "score": 0.4393921494483948
       },
       {
         "rank": 2,
-        "photo_file": "suraisu.jpeg",
-        "score": 0.4193340539932251
+        "gallery_file": "suraisu.jpeg",
+        "score": 0.41915374994277954
       },
       {
         "rank": 3,
-        "photo_file": "syamozi.jpeg",
-        "score": 0.40424007177352905
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.4043213725090027
       },
       {
         "rank": 4,
-        "photo_file": "tonng.jpeg",
-        "score": 0.39901745319366455
+        "gallery_file": "tonng.jpeg",
+        "score": 0.399290531873703
       },
       {
         "rank": 5,
-        "photo_file": "tonng02.jpeg",
-        "score": 0.39100751280784607
+        "gallery_file": "tonng02.jpeg",
+        "score": 0.3910045623779297
       }
     ]
   },
@@ -124,28 +124,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "cup04.jpeg",
-        "score": 0.48373547196388245
+        "gallery_file": "cup04.jpeg",
+        "score": 0.48422080278396606
       },
       {
         "rank": 2,
-        "photo_file": "cup02.jpeg",
-        "score": 0.47488993406295776
+        "gallery_file": "cup02.jpeg",
+        "score": 0.47526073455810547
       },
       {
         "rank": 3,
-        "photo_file": "cup03.jpeg",
-        "score": 0.4689241647720337
+        "gallery_file": "cup03.jpeg",
+        "score": 0.4693264365196228
       },
       {
         "rank": 4,
-        "photo_file": "apple.jpeg",
-        "score": 0.4679049849510193
+        "gallery_file": "apple.jpeg",
+        "score": 0.46820324659347534
       },
       {
         "rank": 5,
-        "photo_file": "syamozi.jpeg",
-        "score": 0.45661431550979614
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.45692986249923706
       }
     ]
   },
@@ -154,28 +154,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "banana.jpeg",
-        "score": 0.5662524700164795
+        "gallery_file": "banana.jpeg",
+        "score": 0.5667064785957336
       },
       {
         "rank": 2,
-        "photo_file": "apple.jpeg",
-        "score": 0.45149338245391846
+        "gallery_file": "apple.jpeg",
+        "score": 0.45189133286476135
       },
       {
         "rank": 3,
-        "photo_file": "syamozi.jpeg",
-        "score": 0.4375835657119751
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.4377501606941223
       },
       {
         "rank": 4,
-        "photo_file": "peach.jpeg",
-        "score": 0.437269002199173
+        "gallery_file": "peach.jpeg",
+        "score": 0.4376286268234253
       },
       {
         "rank": 5,
-        "photo_file": "suraisu.jpeg",
-        "score": 0.4030231833457947
+        "gallery_file": "suraisu.jpeg",
+        "score": 0.4030928313732147
       }
     ]
   },
@@ -184,28 +184,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "cup03.jpeg",
-        "score": 0.49228084087371826
+        "gallery_file": "cup03.jpeg",
+        "score": 0.49238091707229614
       },
       {
         "rank": 2,
-        "photo_file": "cup01.jpeg",
-        "score": 0.4906246066093445
+        "gallery_file": "cup01.jpeg",
+        "score": 0.4906969666481018
       },
       {
         "rank": 3,
-        "photo_file": "cup04.jpeg",
-        "score": 0.48370975255966187
+        "gallery_file": "cup04.jpeg",
+        "score": 0.48377543687820435
       },
       {
         "rank": 4,
-        "photo_file": "cup02.jpeg",
-        "score": 0.48117461800575256
+        "gallery_file": "cup02.jpeg",
+        "score": 0.4813117980957031
       },
       {
         "rank": 5,
-        "photo_file": "apple.jpeg",
-        "score": 0.4620959162712097
+        "gallery_file": "apple.jpeg",
+        "score": 0.4622541069984436
       }
     ]
   },
@@ -214,28 +214,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "cup04.jpeg",
-        "score": 0.43569815158843994
+        "gallery_file": "cup04.jpeg",
+        "score": 0.4357617497444153
       },
       {
         "rank": 2,
-        "photo_file": "cup01.jpeg",
-        "score": 0.42140960693359375
+        "gallery_file": "cup01.jpeg",
+        "score": 0.4216066002845764
       },
       {
         "rank": 3,
-        "photo_file": "cup03.jpeg",
-        "score": 0.42091095447540283
+        "gallery_file": "cup03.jpeg",
+        "score": 0.42112380266189575
       },
       {
         "rank": 4,
-        "photo_file": "cup02.jpeg",
-        "score": 0.41532447934150696
+        "gallery_file": "cup02.jpeg",
+        "score": 0.41552016139030457
       },
       {
         "rank": 5,
-        "photo_file": "pet02.jpeg",
-        "score": 0.4024536609649658
+        "gallery_file": "pet02.jpeg",
+        "score": 0.4027097225189209
       }
     ]
   },
@@ -244,28 +244,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "cup02.jpeg",
-        "score": 0.4783116281032562
+        "gallery_file": "cup02.jpeg",
+        "score": 0.4782679080963135
       },
       {
         "rank": 2,
-        "photo_file": "cup01.jpeg",
-        "score": 0.4477378726005554
+        "gallery_file": "cup01.jpeg",
+        "score": 0.44775089621543884
       },
       {
         "rank": 3,
-        "photo_file": "cup04.jpeg",
-        "score": 0.4363820552825928
+        "gallery_file": "cup04.jpeg",
+        "score": 0.43631505966186523
       },
       {
         "rank": 4,
-        "photo_file": "banana.jpeg",
-        "score": 0.41975289583206177
+        "gallery_file": "banana.jpeg",
+        "score": 0.4200124442577362
       },
       {
         "rank": 5,
-        "photo_file": "cup03.jpeg",
-        "score": 0.41914552450180054
+        "gallery_file": "cup03.jpeg",
+        "score": 0.4191395044326782
       }
     ]
   },
@@ -274,28 +274,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "cup02.jpeg",
-        "score": 0.49769362807273865
+        "gallery_file": "cup02.jpeg",
+        "score": 0.49775511026382446
       },
       {
         "rank": 2,
-        "photo_file": "cup01.jpeg",
-        "score": 0.4903457760810852
+        "gallery_file": "cup01.jpeg",
+        "score": 0.4904683530330658
       },
       {
         "rank": 3,
-        "photo_file": "cup04.jpeg",
-        "score": 0.45763322710990906
+        "gallery_file": "cup04.jpeg",
+        "score": 0.4577137529850006
       },
       {
         "rank": 4,
-        "photo_file": "cup03.jpeg",
-        "score": 0.45294618606567383
+        "gallery_file": "cup03.jpeg",
+        "score": 0.4531165063381195
       },
       {
         "rank": 5,
-        "photo_file": "banana.jpeg",
-        "score": 0.39741915464401245
+        "gallery_file": "banana.jpeg",
+        "score": 0.3978399634361267
       }
     ]
   },
@@ -304,28 +304,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "cup03.jpeg",
-        "score": 0.4856065809726715
+        "gallery_file": "cup03.jpeg",
+        "score": 0.4859606921672821
       },
       {
         "rank": 2,
-        "photo_file": "cup01.jpeg",
-        "score": 0.47212791442871094
+        "gallery_file": "cup01.jpeg",
+        "score": 0.4724717438220978
       },
       {
         "rank": 3,
-        "photo_file": "cup04.jpeg",
-        "score": 0.46178531646728516
+        "gallery_file": "cup04.jpeg",
+        "score": 0.46215224266052246
       },
       {
         "rank": 4,
-        "photo_file": "cup02.jpeg",
-        "score": 0.4566985070705414
+        "gallery_file": "cup02.jpeg",
+        "score": 0.45708325505256653
       },
       {
         "rank": 5,
-        "photo_file": "syamozi.jpeg",
-        "score": 0.4436221122741699
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.4439185857772827
       }
     ]
   },
@@ -334,28 +334,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "banana.jpeg",
-        "score": 0.49223461747169495
+        "gallery_file": "banana.jpeg",
+        "score": 0.4925979673862457
       },
       {
         "rank": 2,
-        "photo_file": "peach.jpeg",
-        "score": 0.4777359068393707
+        "gallery_file": "peach.jpeg",
+        "score": 0.4778967499732971
       },
       {
         "rank": 3,
-        "photo_file": "tonng.jpeg",
-        "score": 0.4647097885608673
+        "gallery_file": "tonng.jpeg",
+        "score": 0.46503758430480957
       },
       {
         "rank": 4,
-        "photo_file": "apple.jpeg",
-        "score": 0.4626910090446472
+        "gallery_file": "apple.jpeg",
+        "score": 0.46282947063446045
       },
       {
         "rank": 5,
-        "photo_file": "cup01.jpeg",
-        "score": 0.4384338855743408
+        "gallery_file": "cup01.jpeg",
+        "score": 0.4383610188961029
       }
     ]
   },
@@ -364,28 +364,28 @@
     "top5": [
       {
         "rank": 1,
-        "photo_file": "apple.jpeg",
-        "score": 0.4028884172439575
+        "gallery_file": "apple.jpeg",
+        "score": 0.4033099114894867
       },
       {
         "rank": 2,
-        "photo_file": "tonng.jpeg",
-        "score": 0.39091625809669495
+        "gallery_file": "tonng.jpeg",
+        "score": 0.3913460671901703
       },
       {
         "rank": 3,
-        "photo_file": "banana.jpeg",
-        "score": 0.3903784453868866
+        "gallery_file": "banana.jpeg",
+        "score": 0.3908820152282715
       },
       {
         "rank": 4,
-        "photo_file": "peach.jpeg",
-        "score": 0.38954806327819824
+        "gallery_file": "peach.jpeg",
+        "score": 0.38994085788726807
       },
       {
         "rank": 5,
-        "photo_file": "syamozi.jpeg",
-        "score": 0.38240954279899597
+        "gallery_file": "syamozi.jpeg",
+        "score": 0.3826434910297394
       }
     ]
   }

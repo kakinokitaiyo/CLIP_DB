@@ -1,0 +1,15 @@
+{
+  "writing_1.png": ["apple.jpeg", "apple_edge.png"],
+  "writing_2.png": ["banana.jpeg", "banana_edge.png"],
+  "writing_3.png": ["can01.jpeg", "can01_edge.png"],
+  "writing_4.png": ["pet01.jpeg", "pet02.jpeg", "pet01_edge.png", "pet02_edge.png"],
+  "writing_5.png": ["cup01.jpeg", "cup01_edge.png"],
+  "writing_6.png": ["cup02.jpeg", "cup02_edge.png"],
+  "writing_7.png": ["cup04.jpeg", "cup03.jpeg", "cup04_edge.png", "cup03_edge.png"],
+  "writing_8.png": ["peach.jpeg", "peach_edge.png"],
+  "writing_9.png": ["suraisu.jpeg", "suraisu_edge.png"],
+  "writing_10.png": ["syamozi.jpeg", "syamozi_edge.png"],
+  "writing_11.png": ["tonng.jpeg", "tonng_edge.png"],
+  "writing_12.png": ["tonng02.jpeg", "tonng02_edge.png"],
+  "writing_13.png": ["pet01.jpeg", "pet02.jpeg", "pet01_edge.png", "pet02_edge.png"]
+}

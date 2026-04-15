@@ -1,0 +1,34 @@
+{
+  "clip_photos": {
+    "total": 13,
+    "top1_correct": 5,
+    "top5_correct": 10,
+    "top1_accuracy": 0.38461538461538464,
+    "top5_accuracy": 0.7692307692307693,
+    "mean_rank_found_only": 2.1
+  },
+  "clip_rbte": {
+    "total": 13,
+    "top1_correct": 7,
+    "top5_correct": 11,
+    "top1_accuracy": 0.5384615384615384,
+    "top5_accuracy": 0.8461538461538461,
+    "mean_rank_found_only": 1.7272727272727273
+  },
+  "sbir_photos": {
+    "total": 13,
+    "top1_correct": 4,
+    "top5_correct": 9,
+    "top1_accuracy": 0.3076923076923077,
+    "top5_accuracy": 0.6923076923076923,
+    "mean_rank_found_only": 2.111111111111111
+  },
+  "sbir_rbte": {
+    "total": 13,
+    "top1_correct": 8,
+    "top5_correct": 12,
+    "top1_accuracy": 0.6153846153846154,
+    "top5_accuracy": 0.9230769230769231,
+    "mean_rank_found_only": 1.75
+  }
+}

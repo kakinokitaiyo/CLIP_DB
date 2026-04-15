@@ -3,28 +3,28 @@
   "top5": [
     {
       "rank": 1,
-      "photo_file": "cup03.jpeg",
-      "score": 0.49228084087371826
+      "gallery_file": "cup03.jpeg",
+      "score": 0.49238091707229614
     },
     {
       "rank": 2,
-      "photo_file": "cup01.jpeg",
-      "score": 0.4906246066093445
+      "gallery_file": "cup01.jpeg",
+      "score": 0.4906969666481018
     },
     {
       "rank": 3,
-      "photo_file": "cup04.jpeg",
-      "score": 0.48370975255966187
+      "gallery_file": "cup04.jpeg",
+      "score": 0.48377543687820435
     },
     {
       "rank": 4,
-      "photo_file": "cup02.jpeg",
-      "score": 0.48117461800575256
+      "gallery_file": "cup02.jpeg",
+      "score": 0.4813117980957031
     },
     {
       "rank": 5,
-      "photo_file": "apple.jpeg",
-      "score": 0.4620959162712097
+      "gallery_file": "apple.jpeg",
+      "score": 0.4622541069984436
     }
   ]
 }
