@@ -50,8 +50,22 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Compare sketch folder and gallery folder with SketchScape and save top-k results."
     )
-    parser.add_argument("--gallery_dir", type=Path, default=GALLERY_DIR, help="比較対象の画像ディレクトリ")
-    parser.add_argument("--query_dir", type=Path, default=SKETCHES_DIR, help="クエリ画像ディレクトリ")
+    parser.add_argument(
+        "--gallery_dir",
+        "--photo_dir",
+        dest="gallery_dir",
+        type=Path,
+        default=GALLERY_DIR,
+        help="比較対象の画像ディレクトリ",
+    )
+    parser.add_argument(
+        "--query_dir",
+        "--sketch_dir",
+        dest="query_dir",
+        type=Path,
+        default=SKETCHES_DIR,
+        help="クエリ画像ディレクトリ",
+    )
     parser.add_argument("--output_dir", type=Path, default=OUTPUT_DIR, help="結果保存先ディレクトリ")
     parser.add_argument("--topk", type=int, default=5, help="上位何件を保存するか")
     parser.add_argument(

@@ -58,13 +58,15 @@ SketchScape の SBIR モデルを使って、`sketches` をクエリ、`photos` 
 ```bash
 cd /home/irsl/workspace/CLIP_DB/src
 python3 run_sbir_top5.py \
-  --photo_dir /home/irsl/workspace/CLIP_DB/photos \
-  --sketch_dir /home/irsl/workspace/CLIP_DB/sketches \
+  --gallery_dir /home/irsl/workspace/CLIP_DB/photos \
+  --query_dir /home/irsl/workspace/CLIP_DB/sketches \
   --output_dir /home/irsl/workspace/CLIP_DB/outputs/sbir \
   --model_path /home/irsl/workspace/SketchScape/models/fscoco_normal.pth \
   --topk 5 \
   --device auto
 ```
+
+`--photo_dir` と `--sketch_dir` も互換用に利用できます。
 
 ### `--device` について
 - `auto` : CUDA が使えれば GPU、だめなら CPU に自動切り替え
@@ -86,5 +88,5 @@ python3 run_clip_top5.py --gallery_dir /home/irsl/workspace/CLIP_DB/output --que
 
 ### SBIR
 ```bash
-python3 run_sbir_top5.py --photo_dir /home/irsl/workspace/CLIP_DB/photos --sketch_dir /home/irsl/workspace/CLIP_DB/sketches --output_dir /home/irsl/workspace/CLIP_DB/outputs/sbir --model_path /home/irsl/workspace/SketchScape/models/fscoco_normal.pth --topk 5 --device auto
+python3 run_sbir_top5.py --gallery_dir /home/irsl/workspace/CLIP_DB/photos --query_dir /home/irsl/workspace/CLIP_DB/sketches --output_dir /home/irsl/workspace/CLIP_DB/outputs/sbir --model_path /home/irsl/workspace/SketchScape/models/fscoco_normal.pth --topk 5 --device auto
 ```

@@ -1,0 +1,30 @@
+{
+  "sketch_file": "writing_9.png",
+  "top5": [
+    {
+      "rank": 1,
+      "gallery_file": "tonng02_edge.png",
+      "score": 0.4777672588825226
+    },
+    {
+      "rank": 2,
+      "gallery_file": "suraisu_edge.png",
+      "score": 0.46436965465545654
+    },
+    {
+      "rank": 3,
+      "gallery_file": "cup01_edge.png",
+      "score": 0.4567236602306366
+    },
+    {
+      "rank": 4,
+      "gallery_file": "syamozi_edge.png",
+      "score": 0.443896621465683
+    },
+    {
+      "rank": 5,
+      "gallery_file": "cup02_edge.png",
+      "score": 0.433387815952301
+    }
+  ]
+}

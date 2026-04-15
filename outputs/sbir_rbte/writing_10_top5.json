@@ -1,0 +1,30 @@
+{
+  "sketch_file": "writing_10.png",
+  "top5": [
+    {
+      "rank": 1,
+      "gallery_file": "syamozi_edge.png",
+      "score": 0.6890623569488525
+    },
+    {
+      "rank": 2,
+      "gallery_file": "apple_edge.png",
+      "score": 0.5488038063049316
+    },
+    {
+      "rank": 3,
+      "gallery_file": "cup04_edge.png",
+      "score": 0.5463892817497253
+    },
+    {
+      "rank": 4,
+      "gallery_file": "tonng_edge.png",
+      "score": 0.5320062041282654
+    },
+    {
+      "rank": 5,
+      "gallery_file": "cup03_edge.png",
+      "score": 0.530068039894104
+    }
+  ]
+}
