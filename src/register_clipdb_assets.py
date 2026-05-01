@@ -54,8 +54,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--table", type=str, default="sketch_images")
 
     parser.add_argument("--photos_dir", type=Path, default=ROOT / "photos")
+    parser.add_argument("--outputs_dir", type=Path, default=ROOT / "output")
     parser.add_argument("--sketches_dir", type=Path, default=ROOT / "sketches")
 
+    parser.add_argument("--outputs", action="store_true", help="output も登録する（RBTE 済み画像）")
     parser.add_argument("--sketches", action="store_true", help="sketches も登録する（デフォルト: photos のみ）")
     parser.add_argument("--dry_run", action="store_true")
     return parser.parse_args()
@@ -102,6 +104,10 @@ def main() -> None:
 
     # Always register photos
     run_register(args.photos_dir.expanduser().resolve(), "photo", args)
+
+    # Optionally register RBTE outputs
+    if args.outputs:
+        run_register(args.outputs_dir.expanduser().resolve(), "output", args)
 
     # Optionally register sketches
     if args.sketches:
