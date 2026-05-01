@@ -114,7 +114,7 @@ def load_rgb_image_from_bytes(data: bytes) -> Image.Image:
 
 def load_bdcn_model(device: str = "cuda"):
     """Load BDCN edge detection model."""
-    bdcn_root = Path("/home/irsl/workspace/rbte_docker")
+    bdcn_root = Path(os.getenv("RBTE_DOCKER_ROOT", "/home/irsl/workspace/rbte_docker"))
     bdcn_dir = bdcn_root / "BDCN"
     bdcn_weight = bdcn_root / "bdcn_model" / "final-model" / "bdcn_pretrained_on_bsds500.pth"
     
