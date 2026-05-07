@@ -2,17 +2,18 @@ from __future__ import annotations
 """
 CLIP_DBアセットをPostgreSQLに登録するスクリプト
 
-このモジュールは、CLIP_DBプロジェクトのアセット（写真、スケッチ）を
+このモジュールは、CLIP_DBプロジェクトのアセットを
 PostgreSQLデータベースに登録するための機能を提供します。
 
 新規フロー：
-    - photos: ロボット撮影写真（元写真）
-    - sketches: 手描きスケッチ
-    - SBIR実行時に photos をオンデマンド RBTE エッジ検出
+    - photos: ロボット撮影写真（home_robot.photos）
+    - photos_edge: photos 登録時に RBTE 生成（home_robot.photos_edge）
+    - sketches/output: 既存テーブル（例: home_robot.sketch_images）にも登録可能
 
 主な機能:
     - コマンドライン引数の解析（データベース接続情報、ディレクトリパス）
-    - photos と sketches の登録
+    - photos + photos_edge の同時登録
+    - sketches / output の登録
     - 登録スクリプトの外部実行とプロセス管理
     - ドライラン機能によるテスト実行対応
 
@@ -41,6 +42,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTER_SCRIPT = ROOT / "src" / "register_sketches_to_db.py"
+REGISTER_PHOTOS_SCRIPT = ROOT / "src" / "register_photos_and_edges.py"
 
 
 def parse_args() -> argparse.Namespace:
@@ -52,6 +54,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--password", type=str, default=os.getenv("PGPASSWORD", ""))
     parser.add_argument("--schema", type=str, default="home_robot")
     parser.add_argument("--table", type=str, default="sketch_images")
+    parser.add_argument("--photos_table", type=str, default="photos")
+    parser.add_argument("--photos_edge_table", type=str, default="photos_edge")
 
     parser.add_argument("--photos_dir", type=Path, default=ROOT / "photos")
     parser.add_argument("--outputs_dir", type=Path, default=ROOT / "output")
@@ -59,6 +63,7 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("--outputs", action="store_true", help="output も登録する（RBTE 済み画像）")
     parser.add_argument("--sketches", action="store_true", help="sketches も登録する（デフォルト: photos のみ）")
+    parser.add_argument("--rbte_device", type=str, default=os.getenv("RBTE_DEVICE", "auto"), choices=["auto", "cpu", "cuda"])
     parser.add_argument("--dry_run", action="store_true")
     return parser.parse_args()
 
@@ -102,8 +107,35 @@ def run_register(
 def main() -> None:
     args = parse_args()
 
-    # Always register photos
-    run_register(args.photos_dir.expanduser().resolve(), "photo", args)
+    # Always register photos + photos_edge (RBTE)
+    photos_cmd = [
+        sys.executable,
+        str(REGISTER_PHOTOS_SCRIPT),
+        "--source_dir",
+        str(args.photos_dir.expanduser().resolve()),
+        "--recursive",
+        "--host",
+        args.host,
+        "--port",
+        str(args.port),
+        "--dbname",
+        args.dbname,
+        "--user",
+        args.user,
+        "--password",
+        args.password,
+        "--schema",
+        args.schema,
+        "--photos_table",
+        args.photos_table,
+        "--photos_edge_table",
+        args.photos_edge_table,
+        "--device",
+        args.rbte_device,
+    ]
+    if args.dry_run:
+        photos_cmd.append("--dry_run")
+    subprocess.run(photos_cmd, check=True)
 
     # Optionally register RBTE outputs
     if args.outputs:

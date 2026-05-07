@@ -52,6 +52,8 @@ python3 src/run_sbir_once_from_db.py --sketch_path sketches/writing_1.png
 | `CLIP_DB_ROOT` | CLIP_DB ルートパス | `/home/irsl/workspace/CLIP_DB` |
 | `SKETCHSCAPE_ROOT` | SketchScape ルートパス | `/home/irsl/workspace/SketchScape` |
 | `SBIR_MODEL_PATH` | SBIR 学習済み重みパス | `/home/irsl/workspace/SketchScape/models/fscoco_normal.pth` |
+| `SBIR_GALLERY_TABLE` | SBIR 検索対象テーブル | `photos_edge` |
+| `SBIR_DISPLAY_TABLE` | SBIR 表示用テーブル | `photos` |
 | `DB_IMAGE_CACHE_DIR` | DB画像のローカルキャッシュ先 | `/tmp/clip_db_image_cache` |
 | `RBTE_CACHE_DIR` | RBTE edge のキャッシュ先 | `/tmp/rbte_cache` |
 | `RBTE_CACHE_MAX_SIZE_GB` | RBTE キャッシュ上限サイズ | `2.0` |
@@ -94,6 +96,28 @@ python3 run_sbir_once_from_db.py --sketch_path ../sketches/writing_1.png
 ローカルキャッシュの保存先を変えたい場合は、`DB_IMAGE_CACHE_DIR` と `RBTE_CACHE_DIR` を設定してください。
 
 ## データベース登録と SBIR 検索
+
+### 2テーブル構成（home_robot.photos / home_robot.photos_edge）
+
+現在は、`photos` 登録時に RBTE を実行して、次の2テーブルを使う構成をサポートしています。
+
+- `home_robot.photos` : 元写真
+- `home_robot.photos_edge` : `photos` から生成した edge 画像
+
+実行コマンド:
+
+```bash
+cd /home/irsl/workspace/CLIP_DB/src
+python3 register_clipdb_assets.py
+```
+
+このコマンドで次を行います。
+
+1. `photos/` を `home_robot.photos` に登録
+2. 各 photo に RBTE を適用
+3. edge 画像を `home_robot.photos_edge` に登録
+
+SBIR 実行時は、デフォルトで `photos_edge` を gallery として使います。
 
 ### アーキテクチャ
 

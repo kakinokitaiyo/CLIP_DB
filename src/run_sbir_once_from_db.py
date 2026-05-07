@@ -36,13 +36,15 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("--schema", type=str, default="home_robot")
     parser.add_argument("--table", type=str, default="sketch_images")
+    parser.add_argument("--gallery_table", type=str, default=os.getenv("SBIR_GALLERY_TABLE", "photos_edge"))
+    parser.add_argument("--display_table", type=str, default=os.getenv("SBIR_DISPLAY_TABLE", "photos"))
     parser.add_argument(
         "--gallery_source_type",
         "--photo_source_type",
         dest="gallery_source_type",
         type=str,
-        default="output",
-        help="検索対象の source_type (デフォルト: output、photo の場合のみ RBTE を適用)",
+        default="photo_edge",
+        help="検索対象の source_type (デフォルト: photo_edge、photo の場合のみ RBTE を適用)",
     )
     parser.add_argument(
         "--display_source_type",
@@ -202,6 +204,7 @@ def save_cached_image_bytes(cache_path: Path, data: bytes) -> None:
 
 def resolve_db_images_with_cache(
     args: argparse.Namespace,
+    table_name: str,
     source_type: str,
     rows: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
@@ -225,7 +228,7 @@ def resolve_db_images_with_cache(
             resolved.append({**row, "image_data": cached})
 
     if missing_ids:
-        fetched = fetch_images_from_db(args, source_type, with_data=True, ids=missing_ids)
+        fetched = fetch_images_from_db(args, table_name, source_type, with_data=True, ids=missing_ids)
         fetched_by_id = {int(row["id"]): row for row in fetched}
         for row in resolved:
             row_id = int(row["id"])
@@ -305,6 +308,7 @@ def cleanup_old_cache(cache_dir: Path, max_size_gb: float = 2.0) -> None:
 
 def fetch_images_from_db(
     args: argparse.Namespace,
+    table_name: str,
     source_type: str,
     with_data: bool,
     ids: list[int] | None = None,
@@ -328,7 +332,7 @@ def fetch_images_from_db(
         {{}}
         ORDER BY id;
         """
-    ).format(sql.Identifier(args.schema), sql.Identifier(args.table), where_clause)
+    ).format(sql.Identifier(args.schema), sql.Identifier(table_name), where_clause)
 
     with psycopg.connect(
         host=args.host,
@@ -371,14 +375,14 @@ def main() -> None:
     if not sketch_path.is_file():
         raise FileNotFoundError(f"sketch_path not found: {sketch_path}")
 
-    gallery_meta = fetch_images_from_db(args, args.gallery_source_type, with_data=False)
+    gallery_meta = fetch_images_from_db(args, args.gallery_table, args.gallery_source_type, with_data=False)
     if not gallery_meta:
         raise FileNotFoundError(
             f"No gallery images found in DB for source_type='{args.gallery_source_type}'. "
             "Register images first."
         )
 
-    display_photos = fetch_images_from_db(args, args.display_source_type, with_data=False)
+    display_photos = fetch_images_from_db(args, args.display_table, args.display_source_type, with_data=False)
     if not display_photos:
         raise FileNotFoundError(
             f"No display photos found in DB for source_type='{args.display_source_type}'."
@@ -414,14 +418,14 @@ def main() -> None:
         sketch_feature = sketch_feature / sketch_feature.norm(dim=-1, keepdim=True)
     
     sketch_feature = sketch_feature.cpu()  # Move to CPU first
-    gallery_images = resolve_db_images_with_cache(args, args.gallery_source_type, gallery_meta)
+    gallery_images = resolve_db_images_with_cache(args, args.gallery_table, args.gallery_source_type, gallery_meta)
 
-    # Gallery source_type が output の場合は、DB/ローカルキャッシュの画像をそのまま使う
+    # Gallery source_type が output / photo_edge の場合は、DB/ローカルキャッシュの画像をそのまま使う
     # photo の場合は RBTE を適用して edge 画像を生成する
     gallery_images_edge: list[dict[str, Any]] = []
 
-    if args.gallery_source_type == "output":
-        print("[INFO] Using output images directly from DB/cache; BDCN is skipped.")
+    if args.gallery_source_type in {"output", "photo_edge"}:
+        print(f"[INFO] Using precomputed edge images ({args.gallery_source_type}) from DB/cache; BDCN is skipped.")
         image_transform = sbir_model.create_image_transforms()
         with torch.no_grad():
             gallery_tensors = []
