@@ -27,6 +27,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--sketch_path", type=Path, required=True, help="クエリスケッチ画像パス")
     parser.add_argument("--topk", type=int, default=5, help="上位件数")
+    parser.add_argument(
+        "--exclude_gallery_ids",
+        type=str,
+        default="",
+        help="一時的に検索対象から除外する gallery id のカンマ区切り（例: 12,34,56）",
+    )
 
     parser.add_argument("--host", type=str, default=os.getenv("PGHOST", "localhost"))
     parser.add_argument("--port", type=int, default=int(os.getenv("PGPORT", "5432")))
@@ -312,18 +318,26 @@ def fetch_images_from_db(
     source_type: str,
     with_data: bool,
     ids: list[int] | None = None,
+    exclude_ids: list[int] | None = None,
 ) -> list[dict[str, Any]]:
     if not args.user:
         raise ValueError("DB user is empty. Set --user or PGUSER.")
 
     select_cols = "id, file_name, source_path, image_sha256, image_data" if with_data else "id, file_name, source_path, image_sha256"
 
+    where_parts = [sql.SQL("source_type = %s")]
+    params_list: list[Any] = [source_type]
+
     if ids:
-        where_clause = sql.SQL("WHERE source_type = %s AND id = ANY(%s)")
-        params: tuple[Any, ...] = (source_type, ids)
-    else:
-        where_clause = sql.SQL("WHERE source_type = %s")
-        params = (source_type,)
+        where_parts.append(sql.SQL("id = ANY(%s)"))
+        params_list.append(ids)
+
+    if exclude_ids:
+        where_parts.append(sql.SQL("NOT (id = ANY(%s))"))
+        params_list.append(exclude_ids)
+
+    where_clause = sql.SQL("WHERE ") + sql.SQL(" AND ").join(where_parts)
+    params: tuple[Any, ...] = tuple(params_list)
 
     query = sql.SQL(
         f"""
@@ -371,11 +385,24 @@ def fetch_images_from_db(
 def main() -> None:
     args = parse_args()
 
+    exclude_gallery_ids: list[int] = []
+    if args.exclude_gallery_ids:
+        try:
+            exclude_gallery_ids = [int(v.strip()) for v in args.exclude_gallery_ids.split(",") if v.strip()]
+        except ValueError as e:
+            raise ValueError(f"Invalid --exclude_gallery_ids: {args.exclude_gallery_ids}") from e
+
     sketch_path = args.sketch_path.expanduser().resolve()
     if not sketch_path.is_file():
         raise FileNotFoundError(f"sketch_path not found: {sketch_path}")
 
-    gallery_meta = fetch_images_from_db(args, args.gallery_table, args.gallery_source_type, with_data=False)
+    gallery_meta = fetch_images_from_db(
+        args,
+        args.gallery_table,
+        args.gallery_source_type,
+        with_data=False,
+        exclude_ids=exclude_gallery_ids,
+    )
     if not gallery_meta:
         raise FileNotFoundError(
             f"No gallery images found in DB for source_type='{args.gallery_source_type}'. "
