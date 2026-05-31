@@ -173,6 +173,57 @@ python3 register_clipdb_assets.py --outputs --sketches
 python3 register_clipdb_assets.py --sketches
 ```
 
+### DB の削除・更新（管理用コマンド）
+
+以下は運用・メンテナンス向けのワンライナーです。実行前に必ずバックアップを取り、適切な権限があることを確認してください。
+
+- 環境変数を設定済みの前提（例）:
+
+```bash
+export PGHOST="***********"
+export PGPORT="****"
+export PGDATABASE="kakinoki_db"
+export PGUSER="kakinoki_taiyo"
+export PGPASSWORD="<your_password>"
+```
+
+- テーブル一覧と行数確認:
+
+```bash
+psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "SELECT table_name FROM information_schema.tables WHERE table_schema='home_robot';"
+psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "SELECT 'photos' AS tbl, COUNT(*) FROM home_robot.photos;"
+psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "SELECT 'photos_edge' AS tbl, COUNT(*) FROM home_robot.photos_edge;"
+```
+
+- `photos` / `photos_edge` の中身を削除（安全順に `photos_edge` を先に削除）:
+
+```bash
+psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "BEGIN; DELETE FROM home_robot.photos_edge; DELETE FROM home_robot.photos; COMMIT;"
+```
+
+- テーブルごと完全に削除したい場合（テーブル定義も消える）:
+
+```bash
+psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "DROP TABLE IF EXISTS home_robot.photos_edge; DROP TABLE IF EXISTS home_robot.photos;"
+```
+
+- カラム追加（埋め込み列などを追加したいとき）:
+
+```bash
+psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "ALTER TABLE home_robot.photos ADD COLUMN IF NOT EXISTS clip_model TEXT;"
+psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "ALTER TABLE home_robot.photos ADD COLUMN IF NOT EXISTS clip_embedding BYTEA;"
+psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "ALTER TABLE home_robot.photos ADD COLUMN IF NOT EXISTS clip_embedding_updated_at TIMESTAMPTZ;"
+```
+
+- 削除後に領域回収（任意）:
+
+```bash
+psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -c "VACUUM FULL ANALYZE home_robot.photos; VACUUM FULL ANALYZE home_robot.photos_edge;"
+```
+
+注意: これらは取り消し不可の操作です。必ずバックアップを取り、実行前に確認してください。
+
+
 ### スケッチから SBIR 検索
 
 ```bash

@@ -78,6 +78,14 @@ def parse_args() -> argparse.Namespace:
         default=Path("~/workspace/SketchScape/models/fscoco_normal.pth"),
         help="SketchScape 学習済み重み",
     )
+    parser.add_argument("--coarse_topk", type=int, default=int(os.getenv("SBIR_COARSE_TOPK", "100")), help="粗検索で保持する上位件数")
+    parser.add_argument("--enable_clip_fusion", action="store_true", help="CLIPテキスト再ランキングを有効化")
+    parser.add_argument("--clip_text_query", type=str, default=os.getenv("SBIR_CLIP_TEXT_QUERY", ""), help="CLIP再ランキング用の短い検索テキスト")
+    parser.add_argument("--clip_embeddings_path", type=Path, default=Path(os.getenv("CLIP_IMAGE_EMBEDDINGS_PATH", "~/workspace/CLIP_DB/cache/clip_image_embeddings.npz")), help="事前計算済みCLIP画像埋め込み(.npz)")
+    parser.add_argument("--clip_model", type=str, default=os.getenv("CLIP_MODEL_NAME", "ViT-B-32"), help="OpenCLIP model name")
+    parser.add_argument("--clip_pretrained", type=str, default=os.getenv("CLIP_PRETRAINED", "laion2b_s34b_b79k"), help="OpenCLIP pretrained tag")
+    parser.add_argument("--scape_weight", type=float, default=float(os.getenv("SBIR_SCAPE_WEIGHT", "0.7")), help="SketchScapeスコア重み")
+    parser.add_argument("--clip_weight", type=float, default=float(os.getenv("SBIR_CLIP_WEIGHT", "0.3")), help="CLIPスコア重み")
     return parser.parse_args()
 
 
@@ -382,6 +390,62 @@ def fetch_images_from_db(
     ]
 
 
+def minmax_normalize(scores: torch.Tensor) -> torch.Tensor:
+    if scores.numel() == 0:
+        return scores
+    s_min = torch.min(scores)
+    s_max = torch.max(scores)
+    if float((s_max - s_min).abs()) < 1e-12:
+        return torch.zeros_like(scores)
+    return (scores - s_min) / (s_max - s_min)
+
+
+def load_clip_embeddings_npz(npz_path: Path) -> tuple[dict[int, int], np.ndarray]:
+    p = npz_path.expanduser().resolve()
+    if not p.is_file():
+        raise FileNotFoundError(f"CLIP embeddings cache not found: {p}")
+
+    data = np.load(p, allow_pickle=False)
+    if "ids" not in data or "embeddings" not in data:
+        raise ValueError(f"Invalid CLIP embeddings cache format: {p} (requires 'ids' and 'embeddings')")
+
+    ids = data["ids"].astype(np.int64)
+    embeddings = data["embeddings"].astype(np.float32)
+    if embeddings.ndim != 2 or len(ids) != embeddings.shape[0]:
+        raise ValueError(f"Invalid CLIP cache shape: ids={ids.shape}, embeddings={embeddings.shape}")
+
+    # Ensure L2 normalized (strictly required for fast dot-product cosine)
+    norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+    norms = np.clip(norms, 1e-12, None)
+    embeddings = embeddings / norms
+
+    id_to_index = {int(pid): i for i, pid in enumerate(ids.tolist())}
+    return id_to_index, embeddings
+
+
+def encode_clip_text_feature(
+    text_query: str,
+    model_name: str,
+    pretrained: str,
+    device: str,
+) -> np.ndarray:
+    try:
+        import open_clip
+    except ImportError as e:
+        raise ImportError("open_clip is required for CLIP fusion. Install open-clip-torch.") from e
+
+    model, _, _ = open_clip.create_model_and_transforms(model_name, pretrained=pretrained)
+    model = model.to(device)
+    model.eval()
+    tokenizer = open_clip.get_tokenizer(model_name)
+
+    with torch.no_grad():
+        tokens = tokenizer([text_query]).to(device)
+        txt = model.encode_text(tokens)
+        txt = txt / txt.norm(dim=-1, keepdim=True)
+    return txt.squeeze(0).detach().cpu().numpy().astype(np.float32)
+
+
 def main() -> None:
     args = parse_args()
 
@@ -572,10 +636,61 @@ def main() -> None:
         sims = (sketch_feature @ gallery_features.T).squeeze(0).cpu()
 
     topk = max(1, args.topk)
-    vals, idxs = torch.topk(sims, k=min(topk, len(gallery_images_edge)))
+    coarse_topk = max(topk, args.coarse_topk)
+    coarse_vals, coarse_idxs = torch.topk(sims, k=min(coarse_topk, len(gallery_images_edge)))
+
+    final_scores = coarse_vals.clone()
+    clip_scores = torch.full_like(coarse_vals, fill_value=0.0)
+    fusion_applied = False
+
+    clip_query = (args.clip_text_query or "").strip()
+    if args.enable_clip_fusion and clip_query:
+        try:
+            id_to_index, clip_embeddings = load_clip_embeddings_npz(args.clip_embeddings_path)
+            text_feat = encode_clip_text_feature(
+                text_query=clip_query,
+                model_name=args.clip_model,
+                pretrained=args.clip_pretrained,
+                device=device,
+            )
+
+            valid_count = 0
+            for j, cand_i in enumerate(coarse_idxs.tolist()):
+                gallery = gallery_images[cand_i]
+                key = canonical_name_key(gallery["file_name"])
+                photo = display_by_key.get(key)
+                if photo is None:
+                    continue
+                photo_id = int(photo["id"])
+                emb_idx = id_to_index.get(photo_id)
+                if emb_idx is None:
+                    continue
+                clip_score = float(np.dot(text_feat, clip_embeddings[emb_idx]))
+                clip_scores[j] = clip_score
+                valid_count += 1
+
+            if valid_count > 0:
+                w_sum = args.scape_weight + args.clip_weight
+                if w_sum <= 1e-12:
+                    w_scape, w_clip = 1.0, 0.0
+                else:
+                    w_scape, w_clip = args.scape_weight / w_sum, args.clip_weight / w_sum
+
+                scape_norm = minmax_normalize(coarse_vals)
+                clip_norm = minmax_normalize(clip_scores)
+                final_scores = w_scape * scape_norm + w_clip * clip_norm
+                fusion_applied = True
+            else:
+                print("[WARN] CLIP fusion requested but no candidate had a matching cached embedding. Falling back to SketchScape-only ranking.")
+        except Exception as e:
+            print(f"[WARN] CLIP fusion failed: {e}. Falling back to SketchScape-only ranking.")
+
+    sort_order = torch.argsort(final_scores, descending=True)
+    selected_order = sort_order[: min(topk, len(sort_order))].tolist()
 
     ranked = []
-    for rank, (score, i) in enumerate(zip(vals.tolist(), idxs.tolist()), start=1):
+    for rank, pos in enumerate(selected_order, start=1):
+        i = int(coarse_idxs[pos].item())
         gallery = gallery_images[i]  # Use original gallery_images for metadata
         key = canonical_name_key(gallery["file_name"])
         photo = display_by_key.get(key)
@@ -588,13 +703,19 @@ def main() -> None:
                 "photo_id": int(photo["id"]) if photo is not None else None,
                 "photo_file": photo["file_name"] if photo is not None else None,
                 "photo_source_path": photo["source_path"] if photo is not None else None,
-                "score": float(score),
+                "score": float(final_scores[pos].item()),
+                "score_sketchscape": float(coarse_vals[pos].item()),
+                "score_clip_text": float(clip_scores[pos].item()) if args.enable_clip_fusion else None,
             }
         )
 
     result = {
         "sketch_file": sketch_path.name,
         "device": device,
+        "coarse_topk": int(min(coarse_topk, len(gallery_images_edge))),
+        "clip_fusion_enabled": bool(args.enable_clip_fusion),
+        "clip_fusion_applied": bool(fusion_applied),
+        "clip_text_query": clip_query if args.enable_clip_fusion else None,
         "topk": ranked,
     }
     print(json.dumps(result, ensure_ascii=False))

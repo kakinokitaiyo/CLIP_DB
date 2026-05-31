@@ -65,6 +65,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sketches", action="store_true", help="sketches も登録する（デフォルト: photos のみ）")
     parser.add_argument("--rbte_device", type=str, default=os.getenv("RBTE_DEVICE", "auto"), choices=["auto", "cpu", "cuda"])
     parser.add_argument("--dry_run", action="store_true")
+    parser.add_argument("--enable_clip", action="store_true", help="When set, generate and store CLIP embeddings during photos registration")
+    parser.add_argument("--clip_model", type=str, default="ViT-B-32")
+    parser.add_argument("--clip_pretrained", type=str, default="laion2b_s34b_b79k")
+    parser.add_argument("--skip_clip_cache", action="store_true", help="Skip auto-generation of CLIP embedding cache (.npz) after registration")
+    parser.add_argument("--clip_cache_dir", type=Path, default=ROOT / "cache", help="Directory to save CLIP embedding cache (.npz)")
     return parser.parse_args()
 
 
@@ -133,6 +138,8 @@ def main() -> None:
         "--device",
         args.rbte_device,
     ]
+    if args.enable_clip:
+        photos_cmd.extend(["--enable_clip", "--clip_model", args.clip_model, "--clip_pretrained", args.clip_pretrained])
     if args.dry_run:
         photos_cmd.append("--dry_run")
     subprocess.run(photos_cmd, check=True)
@@ -144,6 +151,48 @@ def main() -> None:
     # Optionally register sketches
     if args.sketches:
         run_register(args.sketches_dir.expanduser().resolve(), "sketch", args)
+
+    # Auto-generate CLIP embedding cache (.npz) unless skipped
+    if not args.dry_run and not args.skip_clip_cache:
+        print("[INFO] Generating CLIP embedding cache (.npz)...")
+        cache_dir = args.clip_cache_dir.expanduser().resolve()
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_path = cache_dir / "clip_image_embeddings.npz"
+        
+        build_cache_script = ROOT / "src" / "build_clip_image_embeddings_cache.py"
+        cache_cmd = [
+            sys.executable,
+            str(build_cache_script),
+            "--host",
+            args.host,
+            "--port",
+            str(args.port),
+            "--dbname",
+            args.dbname,
+            "--user",
+            args.user,
+            "--password",
+            args.password,
+            "--schema",
+            args.schema,
+            "--table",
+            args.photos_table,
+            "--source_type",
+            "photo",
+            "--output",
+            str(cache_path),
+            "--clip_model",
+            args.clip_model,
+            "--clip_pretrained",
+            args.clip_pretrained,
+            "--device",
+            args.rbte_device,
+        ]
+        try:
+            subprocess.run(cache_cmd, check=True)
+            print(f"[INFO] CLIP cache saved to: {cache_path}")
+        except subprocess.CalledProcessError as e:
+            print(f"[WARN] Failed to generate CLIP cache: {e}")
 
 
 if __name__ == "__main__":

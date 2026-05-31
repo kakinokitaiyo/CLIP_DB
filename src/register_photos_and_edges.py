@@ -43,6 +43,9 @@ def parse_args() -> argparse.Namespace:
         default=os.getenv("RBTE_DEVICE", "auto"),
         choices=["auto", "cpu", "cuda"],
     )
+    parser.add_argument("--enable_clip", action="store_true", help="Generate and store CLIP embeddings for each photo into DB")
+    parser.add_argument("--clip_model", type=str, default="ViT-B-32")
+    parser.add_argument("--clip_pretrained", type=str, default="laion2b_s34b_b79k")
     parser.add_argument("--dry_run", action="store_true")
     return parser.parse_args()
 
@@ -131,6 +134,28 @@ def pil_to_png_bytes(img: Image.Image) -> bytes:
     return buf.getvalue()
 
 
+def load_clip_model_for_encoding(clip_model: str, clip_pretrained: str, device: str = "cpu"):
+    try:
+        import open_clip
+    except Exception as e:
+        raise ImportError("open_clip is required for CLIP embedding generation. Install with: pip install open-clip-torch") from e
+
+    model, _, preprocess = open_clip.create_model_and_transforms(clip_model, pretrained=clip_pretrained)
+    model = model.to(device)
+    model.eval()
+    return model, preprocess
+
+
+def encode_image_bytes_to_normalized_numpy(image_bytes: bytes, preprocess, model, device: str = "cpu"):
+    img = load_rgb_image_from_bytes(image_bytes)
+    tensor = preprocess(img).unsqueeze(0).to(device)
+    with torch.no_grad():
+        feat = model.encode_image(tensor)
+        feat = feat / feat.norm(dim=-1, keepdim=True)
+        arr = feat.detach().cpu().numpy().astype("float32")[0]
+    return arr
+
+
 def ensure_photos_table(conn: psycopg.Connection, schema: str, table: str) -> None:
     with conn.cursor() as cur:
         cur.execute(sql.SQL("CREATE SCHEMA IF NOT EXISTS {}; ").format(sql.Identifier(schema)))
@@ -147,6 +172,9 @@ def ensure_photos_table(conn: psycopg.Connection, schema: str, table: str) -> No
                     width INTEGER,
                     height INTEGER,
                     image_sha256 TEXT NOT NULL UNIQUE,
+                    clip_model TEXT,
+                    clip_embedding BYTEA,
+                    clip_embedding_updated_at TIMESTAMPTZ,
                     image_data BYTEA NOT NULL,
                     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -313,6 +341,12 @@ def main() -> None:
     print(f"RBTE device: {device}")
     bdcn_model = load_bdcn_model(device=device)
 
+    clip_model_obj = None
+    clip_preprocess = None
+    if args.enable_clip:
+        print(f"[INFO] CLIP embedding generation enabled: model={args.clip_model} pretrained={args.clip_pretrained}")
+        clip_model_obj, clip_preprocess = load_clip_model_for_encoding(args.clip_model, args.clip_pretrained, device=device)
+
     with psycopg.connect(
         host=args.host,
         port=args.port,
@@ -331,6 +365,22 @@ def main() -> None:
                 source_app=args.source_app,
                 image_path=path,
             )
+
+            # If enabled, compute CLIP embedding for the original photo and store into DB
+            if args.enable_clip and clip_model_obj is not None and clip_preprocess is not None:
+                try:
+                    img_bytes = path.read_bytes()
+                    emb_np = encode_image_bytes_to_normalized_numpy(img_bytes, clip_preprocess, clip_model_obj, device=device)
+                    emb_bytes = emb_np.tobytes()
+                    with conn.cursor() as cur:
+                        cur.execute(
+                            sql.SQL(
+                                "UPDATE {}.{} SET clip_model=%s, clip_embedding=%s, clip_embedding_updated_at=NOW() WHERE image_sha256=%s"
+                            ).format(sql.Identifier(args.schema), sql.Identifier(args.photos_table)),
+                            (f"{args.clip_model}:{args.clip_pretrained}", psycopg.Binary(emb_bytes), photo_sha),
+                        )
+                except Exception as e:
+                    print(f"[WARN] failed to generate/store CLIP embedding for {path}: {e}")
 
             photo_img = load_rgb_image_from_bytes(path.read_bytes())
             edge_img = detect_edge_from_image(photo_img, bdcn_model, device=device)
