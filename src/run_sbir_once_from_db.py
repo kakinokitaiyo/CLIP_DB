@@ -15,8 +15,29 @@ import cv2
 import numpy as np
 import psycopg
 import torch
+import torchvision.transforms as T
 from PIL import Image
 from psycopg import sql
+
+"""
+run_sbir_once_from_db.py — SBIR runner with optional DINOv2 fusion
+
+New DINOv2 options (added):
+- `--enable_dinov2_fusion`: enable re-ranking using DINOv2 image embeddings.
+- `--dinov2_weight`: float weight for DINOv2 when fusing with SketchScape score.
+- `--dinov2_embeddings_path`: optional .npz of precomputed DINO embeddings.
+
+Behavior:
+- The script first performs a SketchScape (shape-based) coarse retrieval using
+    `gallery_source_type` (defaults to `photo_edge`). For DINOv2 re-ranking the
+    display photo id is used to look up embeddings in this order:
+    1) specified `.npz` via `--dinov2_embeddings_path` (ids/embeddings)
+    2) `photo_embeddings` table in the DB (bytea) — preferred for production
+    3) on-the-fly encoding from the original `photo` image bytes (fallback)
+
+This hybrid keeps the existing edge-based SketchScape scoring while adding
+semantic re-ranking using DINOv2 to reduce shape/meaning mismatches.
+"""
 
 
 
@@ -86,6 +107,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--clip_pretrained", type=str, default=os.getenv("CLIP_PRETRAINED", "laion2b_s34b_b79k"), help="OpenCLIP pretrained tag")
     parser.add_argument("--scape_weight", type=float, default=float(os.getenv("SBIR_SCAPE_WEIGHT", "0.7")), help="SketchScapeスコア重み")
     parser.add_argument("--clip_weight", type=float, default=float(os.getenv("SBIR_CLIP_WEIGHT", "0.3")), help="CLIPスコア重み")
+    parser.add_argument("--enable_dinov2_fusion", action="store_true", help="DINOv2画像埋め込みによる再ランキングを有効化")
+    parser.add_argument("--dinov2_weight", type=float, default=float(os.getenv("SBIR_DINO_WEIGHT", "0.3")), help="DINOv2スコア重み")
+    parser.add_argument("--dinov2_embeddings_path", type=str, default=os.getenv("DINO_IMAGE_EMBEDDINGS_PATH", ""), help="事前計算済みDINO画像埋め込み(.npz)。未指定なら候補のみオンザフライで計算")
     return parser.parse_args()
 
 
@@ -423,6 +447,66 @@ def load_clip_embeddings_npz(npz_path: Path) -> tuple[dict[int, int], np.ndarray
     return id_to_index, embeddings
 
 
+def load_dinov2_embeddings_npz(npz_path: Path) -> tuple[dict[int, int], np.ndarray]:
+    if not npz_path or not str(npz_path).strip():
+        raise FileNotFoundError("DINO embeddings path is empty or None")
+    
+    p = npz_path.expanduser().resolve()
+    if not p.is_file():
+        raise FileNotFoundError(f"DINO embeddings cache not found: {p}")
+
+    data = np.load(p, allow_pickle=False)
+    if "ids" not in data or "embeddings" not in data:
+        raise ValueError(f"Invalid DINO embeddings cache format: {p} (requires 'ids' and 'embeddings')")
+
+    ids = data["ids"].astype(np.int64)
+    embeddings = data["embeddings"].astype(np.float32)
+    if embeddings.ndim != 2 or len(ids) != embeddings.shape[0]:
+        raise ValueError(f"Invalid DINO cache shape: ids={ids.shape}, embeddings={embeddings.shape}")
+
+    norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+    norms = np.clip(norms, 1e-12, None)
+    embeddings = embeddings / norms
+
+    id_to_index = {int(pid): i for i, pid in enumerate(ids.tolist())}
+    return id_to_index, embeddings
+
+
+def fetch_dinov2_embeddings_from_db(args: argparse.Namespace, photo_ids: list[int]) -> dict[int, np.ndarray]:
+    """Fetch DINO embeddings stored in DB table `photo_embeddings` for given photo_ids.
+    Returns mapping photo_id -> numpy float32 vector (L2-normalized).
+    """
+    if not photo_ids:
+        return {}
+
+    # Normalize unique ids
+    uniq = sorted({int(x) for x in photo_ids})
+
+    query = sql.SQL(
+        "SELECT photo_id, embedding FROM {}.{} WHERE photo_id = ANY(%s)"
+    ).format(sql.Identifier(args.schema), sql.Identifier(os.getenv("DINO_EMB_TABLE", "photo_embeddings")))
+
+    result: dict[int, np.ndarray] = {}
+    with psycopg.connect(host=args.host, port=args.port, dbname=args.dbname, user=args.user, password=args.password) as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, (uniq,))
+            rows = cur.fetchall()
+    for r in rows:
+        pid = int(r[0])
+        emb_bytes = bytes(r[1])
+        try:
+            emb = np.frombuffer(emb_bytes, dtype=np.float32)
+            # ensure correct shape (1D) and normalized
+            if emb.size > 0:
+                norm = np.linalg.norm(emb)
+                if norm > 0:
+                    emb = emb / norm
+                result[pid] = emb
+        except Exception:
+            continue
+    return result
+
+
 def encode_clip_text_feature(
     text_query: str,
     model_name: str,
@@ -444,6 +528,30 @@ def encode_clip_text_feature(
         txt = model.encode_text(tokens)
         txt = txt / txt.norm(dim=-1, keepdim=True)
     return txt.squeeze(0).detach().cpu().numpy().astype(np.float32)
+
+
+def load_dinov2_model(device: str):
+    try:
+        model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14')
+    except Exception as e:
+        raise RuntimeError("Failed to load DINOv2 model via torch.hub: " + str(e)) from e
+    model = model.eval().to(device)
+    return model
+
+
+def encode_dinov2_from_pil(img: Image.Image, model, device: str) -> np.ndarray:
+    # Use same transforms as test harness
+    transform = T.Compose([
+        T.Resize(256),
+        T.CenterCrop(224),
+        T.ToTensor(),
+        T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    tensor = transform(img)[:3].unsqueeze(0).to(device)
+    with torch.no_grad():
+        emb = model(tensor)
+        emb = emb / emb.norm(dim=-1, keepdim=True)
+    return emb.squeeze(0).detach().cpu().numpy().astype(np.float32)
 
 
 def main() -> None:
@@ -478,6 +586,9 @@ def main() -> None:
         raise FileNotFoundError(
             f"No display photos found in DB for source_type='{args.display_source_type}'."
         )
+
+    # Fetch display photos with image bytes available for DINOv2 embedding if needed
+    display_photos = fetch_images_from_db(args, args.display_table, args.display_source_type, with_data=True)
 
     display_by_key: dict[str, dict[str, Any]] = {}
     for p in display_photos:
@@ -641,6 +752,9 @@ def main() -> None:
 
     final_scores = coarse_vals.clone()
     clip_scores = torch.full_like(coarse_vals, fill_value=0.0)
+    scape_norm = None
+    clip_norm = None
+    fusion_weights = None
     fusion_applied = False
 
     clip_query = (args.clip_text_query or "").strip()
@@ -678,12 +792,131 @@ def main() -> None:
 
                 scape_norm = minmax_normalize(coarse_vals)
                 clip_norm = minmax_normalize(clip_scores)
+                fusion_weights = {"scape": float(w_scape), "clip": float(w_clip)}
                 final_scores = w_scape * scape_norm + w_clip * clip_norm
                 fusion_applied = True
             else:
                 print("[WARN] CLIP fusion requested but no candidate had a matching cached embedding. Falling back to SketchScape-only ranking.")
         except Exception as e:
             print(f"[WARN] CLIP fusion failed: {e}. Falling back to SketchScape-only ranking.")
+
+    # DINOv2 fusion: compute DINO embeddings for sketch and candidate display photos
+    dino_scores = torch.zeros(len(coarse_vals), dtype=torch.float32, device="cpu")
+    if args.enable_dinov2_fusion:
+        try:
+            # Optionally load precomputed DINO embeddings
+            dino_id_to_index = None
+            dino_embeddings = None
+            dinov2_path_str = str(args.dinov2_embeddings_path).strip()
+            print(f"[DEBUG] dinov2_embeddings_path arg: {args.dinov2_embeddings_path}, normalized: {dinov2_path_str!r}")
+            if dinov2_path_str:
+                dino_id_to_index, dino_embeddings = load_dinov2_embeddings_npz(args.dinov2_embeddings_path)
+                print(f"[INFO] Loaded DINOv2 embeddings from: {args.dinov2_embeddings_path}")
+            else:
+                print(f"[INFO] No .npz file specified; will fetch from DB or compute on-the-fly")
+
+            # Fetch DINO embeddings from DB if available (priority: .npz > DB > on-the-fly)
+            db_dino_map = {}
+            candidate_photo_ids = []
+            for cand_i in coarse_idxs.tolist():
+                gallery = gallery_images[cand_i]
+                key = canonical_name_key(gallery["file_name"])
+                photo = display_by_key.get(key)
+                if photo is not None:
+                    candidate_photo_ids.append(int(photo["id"]))
+            
+            if candidate_photo_ids and dino_embeddings is None:
+                # Only fetch from DB if .npz not loaded
+                print(f"[INFO] Fetching {len(candidate_photo_ids)} DINOv2 embeddings from DB...")
+                db_dino_map = fetch_dinov2_embeddings_from_db(args, candidate_photo_ids)
+                if db_dino_map:
+                    print(f"[INFO] Retrieved {len(db_dino_map)} embeddings from DB")
+
+            # Load DINO model if on-the-fly encoding is needed
+            need_onfly = (dino_embeddings is None) and (len(db_dino_map) < len(candidate_photo_ids))
+            dino_model = None
+            if need_onfly:
+                print(f"[INFO] Loading DINOv2 model for on-the-fly encoding...")
+                dino_model = load_dinov2_model(device)
+
+            # Compute sketch DINO embedding
+            sketch_dino_emb = None
+            if need_onfly:
+                sketch_pil = load_rgb_image(sketch_path)
+                sketch_dino_emb = encode_dinov2_from_pil(sketch_pil, dino_model, device)
+            elif dino_embeddings is not None:
+                # If using .npz for candidates, still compute sketch embedding
+                sketch_pil = load_rgb_image(sketch_path)
+                dino_model = load_dinov2_model(device)
+                sketch_dino_emb = encode_dinov2_from_pil(sketch_pil, dino_model, device)
+
+            # Prepare dinov2 score tensor (same shape as coarse_vals)
+            valid_count = 0
+
+            for j, cand_i in enumerate(coarse_idxs.tolist()):
+                gallery = gallery_images[cand_i]
+                key = canonical_name_key(gallery["file_name"])
+                photo = display_by_key.get(key)
+                if photo is None:
+                    continue
+                photo_id = int(photo["id"])
+
+                # Prefer precomputed npz embeddings, then DB-stored embeddings, else on-the-fly encode
+                emb = None
+                if dino_embeddings is not None:
+                    emb_idx = dino_id_to_index.get(photo_id)
+                    if emb_idx is not None:
+                        emb = dino_embeddings[emb_idx]
+
+                if emb is None and photo_id in db_dino_map:
+                    emb = db_dino_map[photo_id]
+
+                if emb is None:
+                    # on-the-fly encode from photo bytes
+                    try:
+                        img_pil = load_rgb_image_from_bytes(photo["image_data"])
+                    except Exception:
+                        continue
+                    if dino_model is not None:
+                        emb = encode_dinov2_from_pil(img_pil, dino_model, device)
+
+                if emb is None:
+                    continue
+
+                # Ensure sketch embedding available (if embeddings cached and sketch not encoded yet)
+                if sketch_dino_emb is None:
+                    # If dino_embeddings provided but sketch emb not computed, compute on-the-fly
+                    sketch_pil = load_rgb_image(sketch_path)
+                    if dino_model is None:
+                        dino_model = load_dinov2_model(device)
+                    sketch_dino_emb = encode_dinov2_from_pil(sketch_pil, dino_model, device)
+
+                # cosine via dot (both normalized)
+                dino_score = float(np.dot(sketch_dino_emb, emb))
+                dino_scores[j] = dino_score
+                valid_count += 1
+
+            if valid_count > 0:
+                # fuse with SketchScape score (scape) similar to CLIP fusion
+                w_sum = args.scape_weight + args.dinov2_weight
+                if w_sum <= 1e-12:
+                    w_scape, w_dino = 1.0, 0.0
+                else:
+                    w_scape, w_dino = args.scape_weight / w_sum, args.dinov2_weight / w_sum
+
+                scape_norm = minmax_normalize(coarse_vals)
+                dino_norm = minmax_normalize(dino_scores)
+                fusion_weights = {"scape": float(w_scape), "dinov2": float(w_dino)}
+                final_scores = w_scape * scape_norm + w_dino * dino_norm
+                fusion_applied = True
+                print(f"[INFO] DINOv2 fusion applied: {valid_count} candidates fused (weights: scape={w_scape:.3f}, dino={w_dino:.3f})")
+
+
+
+            else:
+                print("[WARN] DINOv2 fusion requested but no candidate had a matching embedding. Falling back to SketchScape-only ranking.")
+        except Exception as e:
+            print(f"[WARN] DINOv2 fusion failed: {e}. Falling back to SketchScape-only ranking.")
 
     sort_order = torch.argsort(final_scores, descending=True)
     selected_order = sort_order[: min(topk, len(sort_order))].tolist()
@@ -706,6 +939,10 @@ def main() -> None:
                 "score": float(final_scores[pos].item()),
                 "score_sketchscape": float(coarse_vals[pos].item()),
                 "score_clip_text": float(clip_scores[pos].item()) if args.enable_clip_fusion else None,
+                "score_sketchscape_norm": float(scape_norm[pos].item()) if scape_norm is not None else None,
+                "score_clip_text_norm": float(clip_norm[pos].item()) if clip_norm is not None else None,
+                "score_dinov2": float(dino_scores[pos].item()) if args.enable_dinov2_fusion else None,
+                "score_dinov2_norm": float(dino_norm[pos].item()) if ('dino_norm' in locals() and dino_norm is not None) else None,
             }
         )
 
@@ -714,8 +951,11 @@ def main() -> None:
         "device": device,
         "coarse_topk": int(min(coarse_topk, len(gallery_images_edge))),
         "clip_fusion_enabled": bool(args.enable_clip_fusion),
-        "clip_fusion_applied": bool(fusion_applied),
+        "clip_fusion_applied": bool(args.enable_clip_fusion and fusion_applied and ('clip' in fusion_weights if fusion_weights else False)),
         "clip_text_query": clip_query if args.enable_clip_fusion else None,
+        "dinov2_fusion_enabled": bool(args.enable_dinov2_fusion),
+        "dinov2_fusion_applied": bool(args.enable_dinov2_fusion and fusion_applied and ('dinov2' in fusion_weights if fusion_weights else False)),
+        "fusion_weights": fusion_weights,
         "topk": ranked,
     }
     print(json.dumps(result, ensure_ascii=False))
