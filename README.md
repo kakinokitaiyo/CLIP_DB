@@ -57,6 +57,11 @@ python3 src/run_sbir_once_from_db.py --sketch_path sketches/writing_1.png
 | `DB_IMAGE_CACHE_DIR` | DB画像のローカルキャッシュ先 | `/tmp/clip_db_image_cache` |
 | `RBTE_CACHE_DIR` | RBTE edge のキャッシュ先 | `/tmp/rbte_cache` |
 | `RBTE_CACHE_MAX_SIZE_GB` | RBTE キャッシュ上限サイズ | `2.0` |
+| `SBIR_SCAPE_WEIGHT` | SketchScape スコア重み（融合使用時） | `0.7` |
+| `SBIR_CLIP_WEIGHT` | CLIP スコア重み（CLIPフュージョン使用時） | `0.3` |
+| `SBIR_DINO_WEIGHT` | DINOv2 スコア重み（DINOv2フュージョン使用時） | `0.3` |
+| `DINO_IMAGE_EMBEDDINGS_PATH` | DINOv2 事前計算埋め込み .npz ファイルパス（未指定なら DB 読込） | - |
+| `ENABLE_DINOV2_FUSION` | DINOv2 融合を有効化（true/false） | `false` |
 
 ### 2. 依存パッケージ
 少なくとも次が必要です。
@@ -92,6 +97,13 @@ python3 register_clipdb_assets.py
 # SBIR 実行（output を gallery として使用）
 python3 run_sbir_once_from_db.py --sketch_path ../sketches/writing_1.png
 ```
+
+## Tools
+
+補助スクリプトは `src/tools/README.md` にまとめてあります。クローラー、埋め込み生成、診断スクリプトなどの使い方はそちらを参照してください。
+
+See: [CLIP_DB/src/tools/README.md](src/tools/README.md)
+
 
 ローカルキャッシュの保存先を変えたい場合は、`DB_IMAGE_CACHE_DIR` と `RBTE_CACHE_DIR` を設定してください。
 
@@ -310,13 +322,131 @@ RTX 5060 Ti のように、環境によっては PyTorch の CUDA ビルド更�
 - 各クエリ画像ごとの `*_top5.json`
 - 全体の `summary.json`
 
+## DINOv2 による再ランキング（セマンティック融合）
+
+SketchScape（形状ベース）の SBIR 結果を、DINOv2（セマンティック）により再ランキングして **Recall@5 を改善**できます。
+
+### 概要
+- **DINOv2**: ViT ベースの自己教師あり視覚表現。スケッチと写真のセマンティック差を捉えられます
+- **融合方式**: `final_score = α × norm(SketchScape) + β × norm(DINOv2)`
+- **埋め込み保存**: PostgreSQL `photo_embeddings` テーブルに float32 L2-正規化済み埋め込みを bytea で保存
+
+### セットアップ
+#### 1. DINOv2 埋め込みをDB に保存
+
+初回のみ実行してください。全ギャラリー画像（74 枚）から DINOv2 埋め込みを計算・DB に upsert します：
+
+```bash
+cd /home/irsl/workspace/CLIP_DB/src
+
+# 初回：全画像を処理してDB に保存
+python3 tools/compute_dinov2_embeddings_db.py
+
+# オプション: 既存の埋め込みを削除してやり直す場合
+python3 tools/compute_dinov2_embeddings_db.py --clear-existing
+
+# 強制的に上書きする場合
+python3 tools/compute_dinov2_embeddings_db.py --force
+```
+
+#### 2. run_sbir_once_from_db.py で DINOv2 融合を有効化
+
+```bash
+python3 run_sbir_once_from_db.py \
+  --sketch_path ../sketches/writing_1.png \
+  --topk 5 \
+  --enable_dinov2_fusion \
+  --dinov2_weight 0.3 \
+  --scape_weight 0.7
+```
+
+- `--enable_dinov2_fusion`: DINOv2 再ランキングを有効化
+- `--dinov2_weight`: DINOv2 スコアの重み（推奨: 0.2～0.4）
+- `--scape_weight`: SketchScape スコアの重み（推奨: 0.6～0.8）
+- `--dinov2_embeddings_path`: (オプション) .npz キャッシュファイル。未指定なら DB から自動読込
+
+### 環境変数設定（全スクリプトで DINOv2 有効化）
+
+```bash
+export ENABLE_DINOV2_FUSION=true
+export SBIR_DINO_WEIGHT=0.3
+export SBIR_SCAPE_WEIGHT=0.7
+```
+
+その後、`sub_writing1.py` など他のスクリプトでも DINOv2 が有効になります。
+
+### ROS 統合（DINOv2 有効）
+
+```bash
+export ENABLE_DINOV2_FUSION=true
+export SBIR_DINO_WEIGHT=0.3
+
+cd /home/irsl/workspace/irsl_www/script
+python3 sub_writing1.py
+```
+
+### テスト結果例（writing_1.png）
+
+| ランク | Baseline（SketchScape のみ） | DINOv2 融合（weight 0.3） | 改善 |
+|---------|------|------|------|
+| **1** | IMG_2796.JPG (0.735) | **apple.jpeg (0.879)** ✨ | rank 7→1 |
+| **2** | IMG_2800.JPG (0.723) | IMG_2794.JPG (0.838) | - |
+| **3** | IMG_2794.JPG (0.695) | IMG_2800.JPG (0.784) | - |
+| **4** | IMG_2824.JPG (0.685) | IMG_2796.JPG (0.783) | - |
+| **5** | IMG_2802.JPG (0.675) | **peach.jpeg (0.729)** ✨ | rank 9→5 |
+
+- DINOv2 により **apple.jpeg** と **peach.jpeg** が正しく上位に浮上
+- 実物写真と形状類似性が高い画像の結果品質が向上
+
+### トラブルシューティング
+
+#### DB に DINOv2 埋め込みがない場合
+```
+[WARN] DINOv2 fusion failed: No embeddings found in photo_embeddings table
+```
+→ `compute_dinov2_embeddings_db.py` を実行して DB に埋め込みを保存してください。
+
+#### オンザフライ計算に切り替える場合
+DB 埋め込みがなくても、`--enable_dinov2_fusion` を指定すれば候補画像だけ DINOv2 を オンザフライで計算します。初回は時間がかかりますが、2 回目以降はスキップされます。
+
+```bash
+python3 run_sbir_once_from_db.py \
+  --sketch_path ../sketches/writing_1.png \
+  --enable_dinov2_fusion \
+  --dinov2_weight 0.3
+```
+
+### 重みのチューニング
+- `--scape_weight + --dinov2_weight` の合計が 1.0 である必要はなく、比率で正規化されます
+- 形状が重要なデータセット: `--scape_weight 0.8 --dinov2_weight 0.2`
+- セマンティックが重要: `--scape_weight 0.6 --dinov2_weight 0.4`
+- 最適値はデータセットによって異なるため、グリッド探索を推奨
 ## よく使う実行例
 ### CLIP
 ```bash
 python3 run_clip_top5.py --gallery_dir /home/irsl/workspace/CLIP_DB/output --query_dir /home/irsl/workspace/CLIP_DB/sketches --output_dir /home/irsl/workspace/CLIP_DB/outputs/clip --topk 5
 ```
 
-### SBIR
+### SBIR（SketchScape のみ）
 ```bash
 python3 run_sbir_top5.py --gallery_dir /home/irsl/workspace/CLIP_DB/photos --query_dir /home/irsl/workspace/CLIP_DB/sketches --output_dir /home/irsl/workspace/CLIP_DB/outputs/sbir --model_path /home/irsl/workspace/SketchScape/models/fscoco_normal.pth --topk 5 --device auto
+```
+
+### SBIR + DINOv2 融合
+```bash
+cd /home/irsl/workspace/CLIP_DB/src
+python3 run_sbir_once_from_db.py \
+  --sketch_path ../sketches/writing_1.png \
+  --topk 5 \
+  --enable_dinov2_fusion \
+  --dinov2_weight 0.3 \
+  --scape_weight 0.7
+```
+
+### ROS パイプライン（DINOv2 有効）
+```bash
+export ENABLE_DINOV2_FUSION=true
+export SBIR_DINO_WEIGHT=0.3
+cd /home/irsl/workspace/irsl_www/script
+python3 sub_writing1.py
 ```
