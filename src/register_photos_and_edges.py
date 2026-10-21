@@ -46,6 +46,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--enable_clip", action="store_true", help="Generate and store CLIP embeddings for each photo into DB")
     parser.add_argument("--clip_model", type=str, default="ViT-B-32")
     parser.add_argument("--clip_pretrained", type=str, default="laion2b_s34b_b79k")
+    parser.add_argument("--enable_dinov2", action="store_true", help="Generate and store DINOv2 embeddings into photo_embeddings table")
+    parser.add_argument("--dinov2_embeddings_table", type=str, default="photo_embeddings")
     parser.add_argument("--dry_run", action="store_true")
     return parser.parse_args()
 
@@ -134,6 +136,51 @@ def pil_to_png_bytes(img: Image.Image) -> bytes:
     return buf.getvalue()
 
 
+def load_dinov2_model_for_encoding(device: str = "cpu"):
+    import torchvision.transforms as T
+    model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14')
+    model = model.eval().to(device)
+    transform = T.Compose([
+        T.Resize(256),
+        T.CenterCrop(224),
+        T.ToTensor(),
+        T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    return model, transform
+
+
+def encode_image_dinov2(image_rgb: Image.Image, model, transform, device: str = "cpu") -> np.ndarray:
+    tensor = transform(image_rgb)[:3].unsqueeze(0).to(device)
+    with torch.no_grad():
+        emb = model(tensor)
+        emb = emb / emb.norm(dim=-1, keepdim=True)
+    return emb.squeeze(0).detach().cpu().numpy().astype(np.float32)
+
+
+def upsert_dinov2_embedding(
+    conn: psycopg.Connection,
+    schema: str,
+    table: str,
+    photo_id: int,
+    embedding: np.ndarray,
+) -> None:
+    emb_bytes = embedding.tobytes()
+    with conn.cursor() as cur:
+        cur.execute(
+            sql.SQL(
+                """
+                INSERT INTO {}.{} (photo_id, model, version, embedding, updated_at)
+                VALUES (%s, 'dinov2_vitb14', '1', %s, NOW())
+                ON CONFLICT (photo_id) DO UPDATE SET
+                    model = EXCLUDED.model,
+                    embedding = EXCLUDED.embedding,
+                    updated_at = NOW()
+                """
+            ).format(sql.Identifier(schema), sql.Identifier(table)),
+            (photo_id, psycopg.Binary(emb_bytes)),
+        )
+
+
 def load_clip_model_for_encoding(clip_model: str, clip_pretrained: str, device: str = "cpu"):
     try:
         import open_clip
@@ -216,7 +263,8 @@ def upsert_photo(
     table: str,
     source_app: str,
     image_path: Path,
-) -> str:
+) -> tuple[str, int]:
+    """Returns (image_sha256, photo_id)."""
     data = image_path.read_bytes()
     img_hash = sha256_of_bytes(data)
     width, height = get_image_size(image_path)
@@ -239,7 +287,8 @@ def upsert_photo(
             width = EXCLUDED.width,
             height = EXCLUDED.height,
             image_data = EXCLUDED.image_data,
-            updated_at = NOW();
+            updated_at = NOW()
+        RETURNING id;
         """
     ).format(sql.Identifier(schema), sql.Identifier(table))
 
@@ -257,7 +306,9 @@ def upsert_photo(
                 data,
             ),
         )
-    return img_hash
+        row = cur.fetchone()
+    photo_id = int(row[0]) if row else -1
+    return img_hash, photo_id
 
 
 def upsert_photo_edge(
@@ -347,6 +398,12 @@ def main() -> None:
         print(f"[INFO] CLIP embedding generation enabled: model={args.clip_model} pretrained={args.clip_pretrained}")
         clip_model_obj, clip_preprocess = load_clip_model_for_encoding(args.clip_model, args.clip_pretrained, device=device)
 
+    dino_model_obj = None
+    dino_transform = None
+    if args.enable_dinov2:
+        print("[INFO] DINOv2 embedding generation enabled")
+        dino_model_obj, dino_transform = load_dinov2_model_for_encoding(device=device)
+
     with psycopg.connect(
         host=args.host,
         port=args.port,
@@ -358,7 +415,7 @@ def main() -> None:
         ensure_photos_edge_table(conn, args.schema, args.photos_edge_table)
 
         for idx, path in enumerate(images, start=1):
-            photo_sha = upsert_photo(
+            photo_sha, photo_id = upsert_photo(
                 conn=conn,
                 schema=args.schema,
                 table=args.photos_table,
@@ -381,6 +438,22 @@ def main() -> None:
                         )
                 except Exception as e:
                     print(f"[WARN] failed to generate/store CLIP embedding for {path}: {e}")
+
+            # If enabled, compute DINOv2 embedding and store into photo_embeddings table
+            if args.enable_dinov2 and dino_model_obj is not None and photo_id > 0:
+                try:
+                    photo_img_for_dino = load_rgb_image_from_bytes(path.read_bytes())
+                    emb_np = encode_image_dinov2(photo_img_for_dino, dino_model_obj, dino_transform, device=device)
+                    upsert_dinov2_embedding(
+                        conn=conn,
+                        schema=args.schema,
+                        table=args.dinov2_embeddings_table,
+                        photo_id=photo_id,
+                        embedding=emb_np,
+                    )
+                    del photo_img_for_dino
+                except Exception as e:
+                    print(f"[WARN] failed to generate/store DINOv2 embedding for {path}: {e}")
 
             photo_img = load_rgb_image_from_bytes(path.read_bytes())
             edge_img = detect_edge_from_image(photo_img, bdcn_model, device=device)
